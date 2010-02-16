@@ -18,13 +18,17 @@ namespace RE330
         };
 
     public:
-        static inline Matrix4 rotationX(float angle);
-        static inline Matrix4 rotationY(float angle);
-        static inline Matrix4 rotationZ(float angle);
-        static inline Matrix4 rotationA(Vector3 axis, float angle);
-        static inline Matrix4 scaling(float x, float y, float z);
-        static inline Matrix4 scaling(Vector3 axis) {
-            return scaling(axis[0], axis[1], axis[2], angle);
+        static Matrix4 rotateX(float angle);
+        static Matrix4 rotateY(float angle);
+        static Matrix4 rotateZ(float angle);
+        static Matrix4 rotateA(Vector3 axis, float angle);
+        static Matrix4 scale(float x, float y, float z);
+        static Matrix4 scale(Vector3 axis) {
+            return scale(axis[0], axis[1], axis[2]);
+        }
+        static Matrix4 translate(float x, float y, float z);
+        static Matrix4 translate(Vector3 v) {
+            return translate(v[0], v[1], v[2]);
         }
 		static const Matrix4 IDENTITY;
 

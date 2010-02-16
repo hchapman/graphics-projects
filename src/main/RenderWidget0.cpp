@@ -1,5 +1,6 @@
 #include "RenderWidget0.h"
 #include "Vector3.h"
+#include "Matrix4.h"
 #include "Camera.h"
 #include "GLWidget.h"
 #include "GLRenderContext.h"
@@ -85,8 +86,10 @@ void RenderWidget0::resizeRenderWidgetEvent(const QSize &s)
 
 void RenderWidget0::timerEvent(QTimerEvent *t)
 {
-	Matrix4 m(cos(0.01),-sin(0.01),0,0, sin(0.01),cos(0.01),0,0, 0,0,1,0, 0,0,0,1);
-	Matrix4 m2(1,0,0,0, 0,cos(0.01), -sin(0.01),0, 0,sin(0.01),cos(0.01),0, 0,0,0,1);
+    Matrix4 m = Matrix4::rotateX(0.01);
+    Matrix4 m2 = Matrix4::rotateZ(0.01);
+    // Matrix4 m(cos(0.01),-sin(0.01),0,0, sin(0.01),cos(0.01),0,0, 0,0,1,0, 0,0,0,1);
+    // Matrix4 m2(1,0,0,0, 0,cos(0.01), -sin(0.01),0, 0,sin(0.01),cos(0.01),0, 0,0,0,1);
 	object->setTransformation(object->getTransformation()*m*m2);
 	updateScene();
 }

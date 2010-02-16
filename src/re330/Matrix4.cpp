@@ -9,7 +9,7 @@ const Matrix4 Matrix4::IDENTITY(
         0, 0, 1, 0,
         0, 0, 0, 1 );
 
-inline Matrix4 rotationX(float a) {
+inline Matrix4 Matrix4::rotateX(float a) {
     return Matrix4(
         1, 0, 0, 0, 
         0, cos(a), -sin(a), 0,
@@ -17,7 +17,7 @@ inline Matrix4 rotationX(float a) {
         0, 0, 0, 1);
 }
 
-inline Matrix4 rotationY(float a) {
+inline Matrix4 Matrix4::rotateY(float a) {
     return Matrix4(
         cos(a), 0, sin(a), 0,
         0, 1, 0, 0,
@@ -25,7 +25,7 @@ inline Matrix4 rotationY(float a) {
         0, 0, 0, 1);
 }
 
-inline Matrix4 rotationZ(float a) {
+inline Matrix4 Matrix4::rotateZ(float a) {
     return Matrix4(
         cos(a), -sin(a), 0, 0,
         sin(a), cos(a), 0, 0,
@@ -33,7 +33,7 @@ inline Matrix4 rotationZ(float a) {
         0, 0, 0, 1);
 }
 
-inline Matrix4 rotationA(Vector3 axis, float a) {
+inline Matrix4 Matrix4::rotateA(Vector3 axis, float a) {
     Vector3 n = axis;
     n.normalize();
     return Matrix4(
@@ -44,7 +44,7 @@ inline Matrix4 rotationA(Vector3 axis, float a) {
     );
 }
 
-inline Matrix4 scaling(float x, float y, float z) {
+inline Matrix4 Matrix4::scale(float x, float y, float z) {
     return Matrix4(
         x, 0, 0, 0,
         0, y, 0, 0,
@@ -53,7 +53,7 @@ inline Matrix4 scaling(float x, float y, float z) {
     );
 }
 
-inline Matrix4 translation(float x, float y, float z) {
+inline Matrix4 Matrix4::translate(float x, float y, float z) {
     return Matrix4(
         0, 0, 0, x,
         0, 0, 0, y,
