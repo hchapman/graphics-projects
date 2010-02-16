@@ -84,9 +84,9 @@ namespace RE330
         float operator^ (const Vector3& k) const {
             return x*k[0] + y*k[1] + z*k[2];
         }
-        // Equality test
+        // Equality test within epsilon
         bool operator== (const Vector3& k) const {
-            return (x == k[0] && y == k[1] && z == k[2]);
+            return ((x - k[0] < EPSILON) && (y - k[1] < EPSILON) && (z - k[2] < EPSILON));
         }
         // Inequality test
         bool operator!= (const Vector3& k) const {

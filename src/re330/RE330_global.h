@@ -1,6 +1,8 @@
 #ifndef RE330_GLOBAL_H
 #define RE330_GLOBAL_H
 
+const float EPSILON = 0.000001;
+
 #include <Qt/qglobal.h>
 
 #ifdef RE330_LIB

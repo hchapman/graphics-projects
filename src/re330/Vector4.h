@@ -60,7 +60,7 @@ namespace RE330
         // Scalar division
         Vector4& operator/= (const float i) {
             x /= i;
-            y /= i; 
+            y /= i;
             z /= i;
             w /= i;
             return *this;
@@ -71,7 +71,7 @@ namespace RE330
         // Scalar multiplication
         Vector4& operator*= (const float i) {
             x *= i;
-            y *= i; 
+            y *= i;
             z *= i;
             w *= i;
             return *this;
@@ -86,7 +86,7 @@ namespace RE330
         }
         // Equality test
         bool operator== (const Vector4& k) const {
-            return (x == k[0] && y == k[1] && z == k[2] && w == k[3]);
+            return ((x - k[0] < EPSILON) && (y - k[1] < EPSILON) && (z - k[2] < EPSILON) && (w - k[3] < EPSILON));
         }
         // Inequality test
         bool operator!= (const Vector4& k) const {
