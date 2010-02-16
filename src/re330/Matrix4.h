@@ -18,16 +18,69 @@ namespace RE330
         };
 
     public:
-        static Matrix4 rotateX(float angle);
-        static Matrix4 rotateY(float angle);
-        static Matrix4 rotateZ(float angle);
-        static Matrix4 rotateA(Vector3 axis, float angle);
-        static Matrix4 scale(float x, float y, float z);
-        static Matrix4 scale(Vector3 axis) {
+        static inline Matrix4 rotateX(float a) {
+            return Matrix4(
+                1, 0, 0, 0, 
+                0, cos(a), -sin(a), 0,
+                0, sin(a), cos(a), 0,
+                0, 0, 0, 1);
+        }
+        static inline Matrix4 rotateY(float a) {
+            return Matrix4(
+                cos(a), 0, sin(a), 0,
+                0, 1, 0, 0,
+                -sin(a), 0, cos(a), 0,
+                0, 0, 0, 1);
+        }
+        static inline Matrix4 rotateZ(float a) {
+            return Matrix4(
+                cos(a), -sin(a), 0, 0,
+                sin(a), cos(a), 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1);
+        }
+        static inline Matrix4 rotateA(Vector3 axis, float a) {
+            Vector3 n = axis;
+            n.normalize();
+            return Matrix4(
+                n[0]*n[0] + cos(a) * (1 - n[0]*n[0]), 
+                n[0]*n[1] * (1 - cos(a)) - n[2] * sin(a), 
+                n[0]*n[2] * (1 - cos(a)) + n[1] * sin(a), 
+                0,
+
+                n[0] * n[1] * (1 - cos(a)) + n[2] * sin(a), 
+                n[1] * n[1] * cos(a) * (1 - n[1] * n[1]), 
+                n[1] * n[2] * (1 - cos(a)) - n[0] * sin(a), 
+                0,
+                
+                n[0] * n[2] * (1 - cos(a)) - n[1] * sin(a), 
+                n[1] * n[2] * (1 - cos(a)) + n[0] * sin(a), 
+                n[2] * n[2] + cos(a) * (1 - n[2]*n[2]), 
+                0,
+
+                0, 0, 0, 1
+                );
+        }
+        static inline Matrix4 scale(float x, float y, float z) {
+            return Matrix4(
+                x, 0, 0, 0,
+                0, y, 0, 0,
+                0, 0, z, 0,
+                0, 0, 0, 1
+                );
+        }
+        static inline Matrix4 scale(Vector3 axis) {
             return scale(axis[0], axis[1], axis[2]);
         }
-        static Matrix4 translate(float x, float y, float z);
-        static Matrix4 translate(Vector3 v) {
+        static inline Matrix4 translate(float x, float y, float z) {
+            return Matrix4(
+                0, 0, 0, x,
+                0, 0, 0, y,
+                0, 0, 0, z,
+                0, 0, 0, 1
+                );
+        }
+        static inline Matrix4 translate(Vector3 v) {
             return translate(v[0], v[1], v[2]);
         }
 		static const Matrix4 IDENTITY;
