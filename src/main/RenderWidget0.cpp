@@ -33,9 +33,9 @@ void RenderWidget0::initSceneEvent()
 	camera = sceneManager->createCamera();
 
 	// A cube
-    const int slices = 8;
-    const int points = 32;
-	const int nVerts = slices * points;
+    const int slices = 32;
+    const int points = 64;
+	const int nVerts = (slices + 1) * points;
     printf("No arrays yet.\n");
     fflush(NULL);
     float* sphere_vertices = makeSphereVertices(slices, points);
@@ -80,14 +80,14 @@ void RenderWidget0::initSceneEvent()
 					 12,14,15, 12,13,14,	// right face
 					 16,18,19, 16,17,18,	// top face
 					 20,22,23, 20,21,22};	// bottom face
-	vertexData.createIndexBuffer(3 * (slices) * points, sphere_indices);
+	vertexData.createIndexBuffer(2 * 3 * (slices) * points, sphere_indices);
 
 	// Trigger timer event every 5ms.
 	timerId = startTimer(5);
 }
 
 float* RenderWidget0::makeSphereVertices(int slices, int points) {
-    float* array = new float[slices * points * 3];
+    float* array = new float[(slices + 1) * points * 3];
     int index = 0;
     // The sphere has a radius of 1
     for(int s = 0; s <= slices; s++) {
@@ -120,13 +120,16 @@ float* RenderWidget0::makeSphereColors(int slices, int points) {
 }
 
 int* RenderWidget0::makeSphereIndices(int slices, int points) {
-    int* array = new int[(slices) * points * 3];
+    int* array = new int[2 * (slices) * points * 3];
     int index = 0;
     for (int s = 0; s < slices; s++) {
         for (int p = 0; p < points; p++) {
             array[index++] = s * points + 1 + p;
             array[index++] = s * points + p;
             array[index++] = (s + 1) * points + p;
+            array[index++] = (s + 1) * points + p;
+            array[index++] = (s + 1) * points + p + 1;
+            array[index++] = s * points + p + 1;
         }
     }
     return array;
@@ -146,10 +149,11 @@ void RenderWidget0::timerEvent(QTimerEvent *t)
 {
     Matrix4 m = Matrix4::rotateX(0.01);
     Matrix4 m2 = Matrix4::rotateZ(0.01);
+    Matrix4 s = Matrix4::scale(1.001, 1.001, 1.001);
     Matrix4 m3 = Matrix4::rotateA(Vector3(3, 2, 1), 0.01);
     // Matrix4 m(cos(0.01),-sin(0.01),0,0, sin(0.01),cos(0.01),0,0, 0,0,1,0, 0,0,0,1);
     // Matrix4 m2(1,0,0,0, 0,cos(0.01), -sin(0.01),0, 0,sin(0.01),cos(0.01),0, 0,0,0,1);
-	object->setTransformation(object->getTransformation()*m);
+	object->setTransformation(object->getTransformation()*m*m2);
 	updateScene();
 }
 
