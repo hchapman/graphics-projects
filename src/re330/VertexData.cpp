@@ -1,5 +1,6 @@
 #include "VertexData.h"
 #include "VertexDeclaration.h"
+#include <stdio.h>
 
 using namespace RE330;
 
@@ -26,6 +27,8 @@ void VertexData::createVertexBuffer(int bufferIndex, int vertexBufferSize, unsig
 void VertexData::createIndexBuffer(int indexCount, int *data)
 {
 	mIndexCount = indexCount;
+    printf("mIndexCount: %d", mIndexCount);
+    fflush(NULL);
 	mIndexBuffer = new int[indexCount];
 	for(int i=0; i<mIndexCount; i++) 
 	{

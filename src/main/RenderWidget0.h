@@ -38,6 +38,11 @@ protected:
 	void mousePressEvent(QMouseEvent *e);
 	void mouseMoveEvent(QMouseEvent *e);
 	void mouseReleaseEvent(QMouseEvent *e);
+	
+	// Creates the sphere's vertices
+    float* makeSphereVertices(int slices, int points);
+    int* makeSphereIndices(int slices, int points);
+    float* makeSphereColors(int slices, int points);
 
 private:
 	SceneManager *sceneManager;
