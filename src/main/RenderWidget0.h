@@ -43,12 +43,19 @@ protected:
     float* makeSphereVertices(int slices, int points);
     int* makeSphereIndices(int slices, int points);
     float* makeSphereColors(int slices, int points);
+    float* makePyramidVertices(int height, int base_points);
+    int* makePyramidIndices(int height, int base_points);
+    float* makePyramidColors(int height, int base_points);
 
 private:
 	SceneManager *sceneManager;
 	Camera *camera;
 	Object *object;
+    Object *cone;
+    Object *sphere;
+    Object *box;
 	int timerId;
+    int counter;
 };
 
 #endif // BASICAPP_H
