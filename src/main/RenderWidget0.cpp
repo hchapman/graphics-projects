@@ -100,15 +100,26 @@ void RenderWidget0::initSceneEvent()
     };
     toDecimal(mars_colors, mars_list);
     
-
-    sun = Shapes::createSphere(sceneManager, 2, 128, 256, sun_colors, sun_list, 1);
-    earth = Shapes::createSphere(sceneManager, 0.5, 64, 128, earth_colors, earth_list, 1);
+    const int jupiter_colors = 5;
+    float jupiter_list[jupiter_colors][3] = {
+        {106, 125, 142},
+        {194, 152, 102},
+        {104,74,52},
+        {146,64,32},
+        {194,152,102}
+    };
+    toDecimal(jupiter_colors, jupiter_list);
+    
+    sun = Shapes::createSphere(sceneManager, 2, 64, 128, sun_colors, sun_list, 1);
+    earth = Shapes::createSphere(sceneManager, 0.5, 16, 64, earth_colors, earth_list, 1);
     moon = Shapes::createSphere(sceneManager, 0.125, 16, 64, moon_colors, moon_list, 1);
     satellite = Shapes::createBox(sceneManager, 0.1, 0.075, 0.075, moon_colors, moon_list, 1);
-    mars = Shapes::createSphere(sceneManager, 0.3, 64, 128, mars_colors, mars_list, 1);
+    mars = Shapes::createSphere(sceneManager, 0.3, 16, 64, mars_colors, mars_list, 1);
+    // mars = Shapes::createCone(sceneManager, 0.25, 0.125, 30, mars_colors, mars_list, 1);
+    jupiter = Shapes::createSphere(sceneManager, 1, 128, 128, jupiter_colors, jupiter_list, 1);
     
 	// Trigger timer event every 5ms.
-	timerId = startTimer(15);
+	timerId = startTimer(5);
 }
 
 void RenderWidget0::toDecimal(int num_colors, float color_list[][3]) {
@@ -140,14 +151,18 @@ void RenderWidget0::timerEvent(QTimerEvent *t)
     Vector3 mars_axis = Vector3(0.2, 1, 0.1);
     Vector3 mars_offset = Vector3(-0.1, 0, 0.2);
     mars_offset.normalize();
-    mars_offset *= 5;
+    mars_offset *= 5 * (1 + abs(sin(mars_theta))/2);
+    Matrix4 jupiter_final = Matrix4::translate(8, 0, 0);
 
-    earth_theta += 0.01;
-    moon_theta += 0.02;
-    mars_theta += 0.007;
+    earth_theta += 0.007;
+    earth_axis_theta += 0.005;
+    moon_theta += 0.01;
+    mars_theta += 0.0035;
+    jupiter_theta += 0.0015;
+    jupiter_z_theta += 0.005;
 
     sun->setTransformation(sun->getTransformation() * m * m2);
-    earth->setTransformation(Matrix4::rotateY(earth_theta) * earth_final);
+    earth->setTransformation(Matrix4::rotateY(earth_theta) * earth_final * Matrix4::rotateA(Vector3(1, 1.73, 0), earth_axis_theta));
     moon->setTransformation(
         Matrix4::translate(cos(earth_theta) * 4, 0, -sin(earth_theta) * 4) * 
         Matrix4::rotateA(Vector3(0, 1, 1), moon_theta) *
@@ -159,6 +174,9 @@ void RenderWidget0::timerEvent(QTimerEvent *t)
     );
     mars->setTransformation(
         Matrix4::rotateA(mars_axis, mars_theta) * Matrix4::translate(mars_offset)
+    );
+    jupiter->setTransformation(
+        Matrix4::rotateY(jupiter_theta) * jupiter_final * Matrix4::rotateX(jupiter_z_theta)
     );
 	updateScene();
 }
