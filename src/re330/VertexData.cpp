@@ -27,8 +27,6 @@ void VertexData::createVertexBuffer(int bufferIndex, int vertexBufferSize, unsig
 void VertexData::createIndexBuffer(int indexCount, int *data)
 {
 	mIndexCount = indexCount;
-    printf("mIndexCount: %d", mIndexCount);
-    fflush(NULL);
 	mIndexBuffer = new int[indexCount];
 	for(int i=0; i<mIndexCount; i++) 
 	{

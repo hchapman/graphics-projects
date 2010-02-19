@@ -46,16 +46,20 @@ protected:
     float* makePyramidVertices(int height, int base_points);
     int* makePyramidIndices(int height, int base_points);
     float* makePyramidColors(int height, int base_points);
-
+    void toDecimal(int num_colors, float color_list[][3]);
 private:
 	SceneManager *sceneManager;
 	Camera *camera;
-	Object *object;
-    Object *cone;
-    Object *sphere;
-    Object *box;
+	Object *earth;
+    Object *sun;
+    Object *moon;
+    Object *satellite;
+    Object *mars;
 	int timerId;
     int counter;
+    float earth_theta;
+    float moon_theta;
+    float mars_theta;
 };
 
 #endif // BASICAPP_H

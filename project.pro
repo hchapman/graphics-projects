@@ -33,6 +33,7 @@ HEADERS += src/main/MainWidget.h \
            src/re330/RenderContext.h \
            src/re330/RenderWidget.h \
            src/re330/SceneManager.h \
+           src/re330/Shapes.h \
            src/re330/Singleton.h \
            src/re330/Vector3.h \
            src/re330/Vector4.h \
@@ -49,5 +50,6 @@ SOURCES += src/main/main.cpp \
            src/re330/Matrix4.cpp \
            src/re330/RenderContext.cpp \
            src/re330/SceneManager.cpp \
+           src/re330/Shapes.cpp \
            src/re330/VertexData.cpp \
            src/re330/VertexDeclaration.cpp

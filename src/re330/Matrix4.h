@@ -177,6 +177,8 @@ namespace RE330
                            m[2][0]*k[0] + m[2][1]*k[1] + m[2][2]*k[2] + m[2][3]*k[3],
                            m[3][0]*k[0] + m[3][1]*k[1] + m[3][2]*k[2] + m[3][3]*k[3]);
         }
+        
+        inline float operator[] (int i) const {return _m[i];}
 
 		inline Matrix4 transpose() const
 		{

@@ -2,6 +2,7 @@
 #define __Vector3_h__
 
 #include "RE330_global.h"
+#include <stdio.h>
 #include <math.h>
 
 namespace RE330 
@@ -9,7 +10,7 @@ namespace RE330
 	class RE330_EXPORT Vector3
 	{
 	private:
-		float x, y, z;
+	    float x, y, z;
     public:
         // Constructors and assignment
         Vector3() : x(0), y(0), z(0) {}
@@ -53,7 +54,7 @@ namespace RE330
         // Scalar division
         Vector3& operator/= (const float i) {
             x /= i;
-            y /= i; 
+            y /= i;
             z /= i;
             return *this;
         }
@@ -63,7 +64,7 @@ namespace RE330
         // Scalar multiplication
         Vector3& operator*= (const float i) {
             x *= i;
-            y *= i; 
+            y *= i;
             z *= i;
             return *this;
         }
@@ -100,7 +101,7 @@ namespace RE330
         // Normalizes the vector
         Vector3& normalize () {
             if (len() == 0) return (*this);
-            return (*this) *= (1/(len()));
+            return (*this) /= len();
         }
 	};
 

@@ -6,6 +6,8 @@
 #include "Object.h"
 #include "RenderContext.h"
 #include <list>
+#include <stdlib.h>
+#include <time.h>
 
 namespace RE330 
 {
@@ -15,6 +17,7 @@ namespace RE330
 	*/
 	class RE330_EXPORT SceneManager
 	{
+        friend class Shapes;
 	public:
 		SceneManager();
 		~SceneManager();
@@ -27,24 +30,6 @@ namespace RE330
 			stored in the scene manager.
 		*/
 		Object *createObject();
-		
-		/** These methods create basic shapes.
-		
-		*/
-        Object *createSphere(float height, int slices, int points, const int num_colors, float color_list[][3]);
-        Object *createCone(float height, int base_points, const int num_colors, float color_list[][3]);
-        Object *createBox(float height, float width, float depth, const int num_colors, float color_list[][3]);
-        
-        float* coneVertices(float height, int base_points, const int num_colors);
-        float* coneColors(int base_points, const int num_colors, float color_list[][3]);
-        int* coneIndices(int base_points, const int num_colors);
-        float* sphereVertices(float height, int slices, int points, const int num_colors);
-        float* sphereColors(int slices, int points, const int num_colors, float color_list[][3]);
-        int* sphereIndices(int slices, int points, const int num_colors);
-        float* boxVertices(float height, float width, float depth, const int num_colors);
-        float* boxColors(const int num_colors, float color_list[][3]);
-        int* boxIndices(const int num_colors);
-        void setupObject(Object* obj, int nVerts, int nIndices, float* v, float* c, int* i);
 
 		/** This method needs to be called in the renderSceneEvent
 			event handler of the RenderWidget. 
