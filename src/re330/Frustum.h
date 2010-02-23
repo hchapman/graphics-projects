@@ -14,15 +14,39 @@ namespace RE330
 	*/
 	class RE330_EXPORT Frustum
 	{
-		friend class Camera;
+	protected:
+		Matrix4 p;
+        float near, far, aspect, fov;
 
 	public:
-		Frustum() :	p(2, 0, 0, 0, 0, 2, 0, 0, 0, 0, -1.02, -2.02, 0, 0, -1.f, 0.f) {};
+        friend std::ostream& operator<< (std::ostream &out, Frustum &f);
+
+		Frustum() :	p(2,0,0,0, 0,2,0,0, 0,0,-1.02,-2.02, 0,0,-1.f,0.f),
+            near(1), far(101), aspect(1), fov(M_PI/4) {};
 		const Matrix4 &getProjectionMatrix() const { return p; }
 
-	private:
-		Matrix4 p;
+        void updateProjectionMatrix();
+
+        // Mutators for the Frustrum parameters
+        void setNearPlane(float n)   { near = n;   updateProjectionMatrix(); }
+        void setFarPlane(float f)    { far = f;    updateProjectionMatrix(); }
+        void setAspectRatio(float r) { aspect = r; updateProjectionMatrix(); }
+        void setVerticalFOV(float t) { fov = t;  updateProjectionMatrix(); }
+
+        // Change the projection matrix in one fell swoop
+        void createProjectionMatrix(float n, float f, float r, float t)
+        { near = n; far = f; aspect = r; fov = t; updateProjectionMatrix(); }
 	};
+
+    inline std::ostream& operator<< (std::ostream &out, Frustum &f) {
+        out << "Frustum("
+            << f.p << ","
+            << f.near << ","
+            << f.far << ","
+            << f.aspect << ","
+            << f.fov << ")";
+        return out;
+    }
 
 }
 

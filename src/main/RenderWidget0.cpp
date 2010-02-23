@@ -35,18 +35,28 @@ void RenderWidget0::initSceneEvent()
 
 	// Camera
 	camera = sceneManager->createCamera();
+    
     std::cout << *camera << std::endl;
 
     // First camera test setting
-    // camera->createViewMatrix(Vector4(0,0,40,1),
-    //                          Vector4(0,0,0,1),
-    //                          Vector4(0,1,0,0));
+    camera->createViewMatrix(
+        Vector4(0,0,40,1),
+        Vector4(0,0,0,1),
+        Vector4(0,1,0,0));
 
     // Second camera test setting
-    camera->createViewMatrix(
-        Vector4(-10,40,40,1),                     
-        Vector4(-5,0,0,1),
-        Vector4(0,1,0,0));
+    // camera->createViewMatrix(
+    //     Vector4(-10,40,40,1),                     
+    //     Vector4(-5,0,0,1),
+    //     Vector4(0,1,0,0));
+
+    // camera->createProjectionMatrix(
+    //    1, 101, 1, 45.0/180.0*M_PI);
+
+    camera->createProjectionMatrix(
+        1, 100, 1, 60.0/180.0*M_PI);
+
+    std::cout << *camera << std::endl;
 
     // const int sun_colors = 13;
     // float sun_list[sun_colors][3] = {

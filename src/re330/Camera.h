@@ -19,19 +19,19 @@ namespace RE330
         Matrix4 v;               // The View Matrix
         Vector4 e;               // The Center of Projection
         Vector4 u;               // The Up Vector
-        Vector4 p;               // The Look at Point
+        Vector4 l;               // The Look at Point
 
     public:
         friend std::ostream& operator<< (std::ostream &out, Camera &c);
 
         Camera() : v(1,0,0,0, 0,1,0,0, 0,0,1,-10, 0,0,0,1),
-            e(0,0,10,1), u(0,1,0,0), p(0,0,0,1) {};
+            e(0,0,10,1), u(0,1,0,0), l(0,0,0,1) {};
 
         // Accessor Methods
         const Matrix4 &getViewMatrix() const { return v; }
         const Vector4 &getCenter() const { return e; }
         const Vector4 &getUpVector() const { return u; }
-        const Vector4 &getLookPoint() const { return p; }
+        const Vector4 &getLookPoint() const { return l; }
 
         // Updates the view matrix from member vectors.
         void updateViewMatrix();
@@ -39,12 +39,12 @@ namespace RE330
         // Mutator Methods
         void setCenter(Vector4 center)   { e = center; updateViewMatrix(); }
         void setUpVector(Vector4 up)     { u = up;     updateViewMatrix(); }
-        void setLookPoint(Vector4 point) { p = point;  updateViewMatrix(); }
+        void setLookPoint(Vector4 point) { l = point;  updateViewMatrix(); }
 
         // Creates a view matrix from a center of projection,
         // a look at point, and an up vector.
         void createViewMatrix(Vector4 center, Vector4 point, Vector4 up)
-        { e = center; p = point; u = up; updateViewMatrix(); }
+        { e = center; l = point; u = up; updateViewMatrix(); }
 
     };
 
@@ -53,7 +53,7 @@ namespace RE330
             << c.v << ","
             << c.e << ","
             << c.u << ","
-            << c.p << ")";
+            << c.l << "):" << (Frustum&)c ;
         return out;
     }
 }
