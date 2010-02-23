@@ -50,20 +50,10 @@ protected:
 private:
 	SceneManager *sceneManager;
 	Camera *camera;
-	Object *earth;
-    Object *sun;
-    Object *moon;
-    Object *satellite;
-    Object *mars;
-    Object *jupiter;
+	Object *cube;
+    Object *object;
 	int timerId;
     int counter;
-    float earth_theta;
-    float earth_axis_theta;
-    float moon_theta;
-    float mars_theta;
-    float jupiter_theta;
-    float jupiter_z_theta;
 };
 
 #endif // BASICAPP_H

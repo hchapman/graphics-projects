@@ -2,13 +2,14 @@
 #define __Matrix4__
 
 #include <assert.h>
+#include <iostream>
 #include "Vector4.h"
 #include "Vector3.h"
 
 namespace RE330
 {
     /** Matrix class for 4x4 matrices.
-	*/
+    */
     class RE330_EXPORT Matrix4
     {
     protected:
@@ -18,9 +19,11 @@ namespace RE330
         };
 
     public:
+        friend std::ostream& operator<< (std::ostream &out, Matrix4 &m);
+
         static inline Matrix4 rotateX(float a) {
             return Matrix4(
-                1, 0, 0, 0, 
+                1, 0, 0, 0,
                 0, cos(a), -sin(a), 0,
                 0, sin(a), cos(a), 0,
                 0, 0, 0, 1);
@@ -43,18 +46,18 @@ namespace RE330
             Vector3 n = axis;
             n.normalize();
             return Matrix4(
-                n[0]*n[0] + cos(a) * (1 - n[0]*n[0]), 
-                n[0]*n[1] * (1 - cos(a)) - n[2] * sin(a), 
-                n[0]*n[2] * (1 - cos(a)) + n[1] * sin(a), 
+                n[0]*n[0] + cos(a) * (1 - n[0]*n[0]),
+                n[0]*n[1] * (1 - cos(a)) - n[2] * sin(a),
+                n[0]*n[2] * (1 - cos(a)) + n[1] * sin(a),
                 0,
 
-                n[0] * n[1] * (1 - cos(a)) + n[2] * sin(a), 
-                n[1] * n[1] + cos(a) * (1 - n[1] * n[1]), 
-                n[1] * n[2] * (1 - cos(a)) - n[0] * sin(a), 
+                n[0] * n[1] * (1 - cos(a)) + n[2] * sin(a),
+                n[1] * n[1] + cos(a) * (1 - n[1] * n[1]),
+                n[1] * n[2] * (1 - cos(a)) - n[0] * sin(a),
                 0,
-                
-                n[0] * n[2] * (1 - cos(a)) - n[1] * sin(a), 
-                n[1] * n[2] * (1 - cos(a)) + n[0] * sin(a), 
+
+                n[0] * n[2] * (1 - cos(a)) - n[1] * sin(a),
+                n[1] * n[2] * (1 - cos(a)) + n[0] * sin(a),
                 n[2] * n[2] + cos(a) * (1 - n[2]*n[2]),
                 0,
 
@@ -83,7 +86,7 @@ namespace RE330
         static inline Matrix4 translate(Vector3 v) {
             return translate(v[0], v[1], v[2]);
         }
-		static const Matrix4 IDENTITY;
+        static const Matrix4 IDENTITY;
 
         inline Matrix4()
         {}
@@ -93,22 +96,22 @@ namespace RE330
             float m20, float m21, float m22, float m23,
             float m30, float m31, float m32, float m33 )
         {
-            m[0][0] = m00;
-            m[0][1] = m01;
-            m[0][2] = m02;
-            m[0][3] = m03;
-            m[1][0] = m10;
-            m[1][1] = m11;
-            m[1][2] = m12;
-            m[1][3] = m13;
-            m[2][0] = m20;
-            m[2][1] = m21;
-            m[2][2] = m22;
-            m[2][3] = m23;
-            m[3][0] = m30;
-            m[3][1] = m31;
-            m[3][2] = m32;
-            m[3][3] = m33;
+            _m[0] = m00;
+            _m[1] = m01;
+            _m[2] = m02;
+            _m[3] = m03;
+            _m[4] = m10;
+            _m[5] = m11;
+            _m[6] = m12;
+            _m[7] = m13;
+            _m[8] = m20;
+            _m[9] = m21;
+            _m[10] = m22;
+            _m[11] = m23;
+            _m[12] = m30;
+            _m[13] = m31;
+            _m[14] = m32;
+            _m[15] = m33;
         }
         inline Matrix4 (const float *m) {
             Matrix4(m[0],m[1],m[2],m[3],
@@ -121,6 +124,14 @@ namespace RE330
                     m[1][0],m[1][1],m[1][2],m[1][3],
                     m[2][0],m[2][1],m[2][2],m[2][3],
                     m[3][0],m[3][1],m[3][2],m[3][3]);
+        }
+        // Construct a new Matrix4 from 4 column Vector4s
+        inline Matrix4 (const Vector4 a, const Vector4 b,
+                        const Vector4 c, const Vector4 d) {
+            Matrix4(a[0], b[0], c[0], d[0],
+                    a[1], b[1], c[1], d[1],
+                    a[2], b[2], c[2], d[2],
+                    a[3], b[3], c[3], d[3]);
         }
         inline Matrix4& operator= (const Matrix4& n) {
             m[0][0] = n.m[0][0];
@@ -145,25 +156,41 @@ namespace RE330
 
         inline Matrix4 operator* (const Matrix4 &m2) const {
             Matrix4 n = Matrix4();
-			n.m[0][0] = m[0][0] * m2.m[0][0] + m[0][1] * m2.m[1][0] + m[0][2] * m2.m[2][0] + m[0][3] * m2.m[3][0];
-			n.m[0][1] = m[0][0] * m2.m[0][1] + m[0][1] * m2.m[1][1] + m[0][2] * m2.m[2][1] + m[0][3] * m2.m[3][1];
-			n.m[0][2] = m[0][0] * m2.m[0][2] + m[0][1] * m2.m[1][2] + m[0][2] * m2.m[2][2] + m[0][3] * m2.m[3][2];
-			n.m[0][3] = m[0][0] * m2.m[0][3] + m[0][1] * m2.m[1][3] + m[0][2] * m2.m[2][3] + m[0][3] * m2.m[3][3];
+            n.m[0][0] = m[0][0] * m2.m[0][0] + m[0][1] * m2.m[1][0] +
+                m[0][2] * m2.m[2][0] + m[0][3] * m2.m[3][0];
+            n.m[0][1] = m[0][0] * m2.m[0][1] + m[0][1] * m2.m[1][1] +
+                m[0][2] * m2.m[2][1] + m[0][3] * m2.m[3][1];
+            n.m[0][2] = m[0][0] * m2.m[0][2] + m[0][1] * m2.m[1][2] +
+                m[0][2] * m2.m[2][2] + m[0][3] * m2.m[3][2];
+            n.m[0][3] = m[0][0] * m2.m[0][3] + m[0][1] * m2.m[1][3] +
+                m[0][2] * m2.m[2][3] + m[0][3] * m2.m[3][3];
 
-			n.m[1][0] = m[1][0] * m2.m[0][0] + m[1][1] * m2.m[1][0] + m[1][2] * m2.m[2][0] + m[1][3] * m2.m[3][0];
-			n.m[1][1] = m[1][0] * m2.m[0][1] + m[1][1] * m2.m[1][1] + m[1][2] * m2.m[2][1] + m[1][3] * m2.m[3][1];
-			n.m[1][2] = m[1][0] * m2.m[0][2] + m[1][1] * m2.m[1][2] + m[1][2] * m2.m[2][2] + m[1][3] * m2.m[3][2];
-			n.m[1][3] = m[1][0] * m2.m[0][3] + m[1][1] * m2.m[1][3] + m[1][2] * m2.m[2][3] + m[1][3] * m2.m[3][3];
+            n.m[1][0] = m[1][0] * m2.m[0][0] + m[1][1] * m2.m[1][0] +
+                m[1][2] * m2.m[2][0] + m[1][3] * m2.m[3][0];
+            n.m[1][1] = m[1][0] * m2.m[0][1] + m[1][1] * m2.m[1][1] +
+                m[1][2] * m2.m[2][1] + m[1][3] * m2.m[3][1];
+            n.m[1][2] = m[1][0] * m2.m[0][2] + m[1][1] * m2.m[1][2] +
+                m[1][2] * m2.m[2][2] + m[1][3] * m2.m[3][2];
+            n.m[1][3] = m[1][0] * m2.m[0][3] + m[1][1] * m2.m[1][3] +
+                m[1][2] * m2.m[2][3] + m[1][3] * m2.m[3][3];
 
-			n.m[2][0] = m[2][0] * m2.m[0][0] + m[2][1] * m2.m[1][0] + m[2][2] * m2.m[2][0] + m[2][3] * m2.m[3][0];
-			n.m[2][1] = m[2][0] * m2.m[0][1] + m[2][1] * m2.m[1][1] + m[2][2] * m2.m[2][1] + m[2][3] * m2.m[3][1];
-			n.m[2][2] = m[2][0] * m2.m[0][2] + m[2][1] * m2.m[1][2] + m[2][2] * m2.m[2][2] + m[2][3] * m2.m[3][2];
-			n.m[2][3] = m[2][0] * m2.m[0][3] + m[2][1] * m2.m[1][3] + m[2][2] * m2.m[2][3] + m[2][3] * m2.m[3][3];
+            n.m[2][0] = m[2][0] * m2.m[0][0] + m[2][1] * m2.m[1][0] +
+                m[2][2] * m2.m[2][0] + m[2][3] * m2.m[3][0];
+            n.m[2][1] = m[2][0] * m2.m[0][1] + m[2][1] * m2.m[1][1] +
+                m[2][2] * m2.m[2][1] + m[2][3] * m2.m[3][1];
+            n.m[2][2] = m[2][0] * m2.m[0][2] + m[2][1] * m2.m[1][2] +
+                m[2][2] * m2.m[2][2] + m[2][3] * m2.m[3][2];
+            n.m[2][3] = m[2][0] * m2.m[0][3] + m[2][1] * m2.m[1][3] +
+                m[2][2] * m2.m[2][3] + m[2][3] * m2.m[3][3];
 
-			n.m[3][0] = m[3][0] * m2.m[0][0] + m[3][1] * m2.m[1][0] + m[3][2] * m2.m[2][0] + m[3][3] * m2.m[3][0];
-			n.m[3][1] = m[3][0] * m2.m[0][1] + m[3][1] * m2.m[1][1] + m[3][2] * m2.m[2][1] + m[3][3] * m2.m[3][1];
-			n.m[3][2] = m[3][0] * m2.m[0][2] + m[3][1] * m2.m[1][2] + m[3][2] * m2.m[2][2] + m[3][3] * m2.m[3][2];
-			n.m[3][3] = m[3][0] * m2.m[0][3] + m[3][1] * m2.m[1][3] + m[3][2] * m2.m[2][3] + m[3][3] * m2.m[3][3];
+            n.m[3][0] = m[3][0] * m2.m[0][0] + m[3][1] * m2.m[1][0] +
+                m[3][2] * m2.m[2][0] + m[3][3] * m2.m[3][0];
+            n.m[3][1] = m[3][0] * m2.m[0][1] + m[3][1] * m2.m[1][1] +
+                m[3][2] * m2.m[2][1] + m[3][3] * m2.m[3][1];
+            n.m[3][2] = m[3][0] * m2.m[0][2] + m[3][1] * m2.m[1][2] +
+                m[3][2] * m2.m[2][2] + m[3][3] * m2.m[3][2];
+            n.m[3][3] = m[3][0] * m2.m[0][3] + m[3][1] * m2.m[1][3] +
+                m[3][2] * m2.m[2][3] + m[3][3] * m2.m[3][3];
             return n;
         }
 
@@ -177,29 +204,39 @@ namespace RE330
                            m[2][0]*k[0] + m[2][1]*k[1] + m[2][2]*k[2] + m[2][3]*k[3],
                            m[3][0]*k[0] + m[3][1]*k[1] + m[3][2]*k[2] + m[3][3]*k[3]);
         }
-        
+
         inline float operator[] (int i) const {return _m[i];}
 
-		inline Matrix4 transpose() const
-		{
-			Matrix4 r;
-			for(int i=0; i<4; i++) 
-			{
-				for(int j=0; j<4; j++)
-				{
-					r._m[i*4+j]=_m[j*4+i];
-				}
-			}
-			return r;
-		}
+        inline Matrix4 transpose() const
+        {
+            Matrix4 r;
+            for(int i=0; i<4; i++)
+            {
+                for(int j=0; j<4; j++)
+                {
+                    r._m[i*4+j]=_m[j*4+i];
+                }
+            }
+            return r;
+        }
 
-		inline float* getElementPointer()
-		{
-			return static_cast<float *>(_m);
-		}
-	};
-	
+        inline float* getElementPointer()
+        {
+            return static_cast<float *>(_m);
+        }
+    };
+
+    inline std::ostream& operator<< (std::ostream &out, Matrix4 &m) {
+        out << "Matrix4(";
+        for (int i = 0; i < 4; i++) {
+            out << "(";
+            for (int j = 0; j < 4; j++)
+                out << m.m[i][j] << ((j == 3) ? ")" : ",");
+            out << ((i==3) ? ")" : ",");
+        }
+        return out;
+    }
+
 }
 
 #endif
-

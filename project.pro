@@ -48,6 +48,7 @@ SOURCES += src/main/main.cpp \
            src/re330/GLRenderContext.cpp \
            src/re330/GLWidget.cpp \
            src/re330/Matrix4.cpp \
+           src/re330/Camera.cpp \
            src/re330/RenderContext.cpp \
            src/re330/SceneManager.cpp \
            src/re330/Shapes.cpp \

@@ -3,6 +3,8 @@
 
 #include "RE330_global.h"
 #include <math.h>
+#include <Vector3.h>
+#include <iostream>
 
 namespace RE330 
 {
@@ -11,12 +13,21 @@ namespace RE330
 	private:
 		float x, y, z, w;
     public:
+        friend std::ostream& operator<< (std::ostream &out, Vector4 &v);
+
         // Constructors and assignment
         Vector4() : x(0), y(0), z(0), w(0) {}
         Vector4(float a, float b, float c, float d) 
             : x(a), y(b), z(c), w(d) {}
         Vector4(float *k) 
-        { Vector4(k[0], k[1], k[2], k[3]); }
+            : x(k[0]), y(k[1]), z(k[2]), w(k[3]) {}
+        // Make a Vector4 from a Vector3 and a fourth float
+        Vector4(const Vector3 k, const float h)
+            : x(k[0]), y(k[1]), z(k[2]), w(h) {}
+
+        // Make a Vector3 from the Vector4 (stripping the fourth float)
+        Vector3 asVector3() const { return Vector3(&x); }
+
         float operator[] (int i) const {return (&x)[i];}
         Vector4& operator= (const Vector4& k) {
             x = k[0];
@@ -32,7 +43,7 @@ namespace RE330
             w = k[3];
             return *this;
         }
-        Vector4(const Vector4& k) {(*this) = k;}
+        Vector4(const Vector4& k) : x(k[0]), y(k[1]), z(k[2]), w(k[3]) {}
 
         // Overloaded operators
         // Addition
@@ -43,7 +54,7 @@ namespace RE330
             w += k[3];
             return *this;
         }
-        Vector4& operator+ (const Vector4& k) const {
+        Vector4 operator+ (const Vector4& k) const {
             return Vector4(*this) += k;
         }
         // Subtraction
@@ -54,7 +65,7 @@ namespace RE330
             w -= k[3];
             return *this;
         }
-        Vector4& operator- (const Vector4& k) const {
+        Vector4 operator- (const Vector4& k) const {
             return Vector4(*this) -= k;
         }
         // Scalar division
@@ -65,7 +76,7 @@ namespace RE330
             w /= i;
             return *this;
         }
-        Vector4& operator/ (const float i) const {
+        Vector4 operator/ (const float i) const {
             return Vector4(*this) /= i;
         }
         // Scalar multiplication
@@ -76,7 +87,7 @@ namespace RE330
             w *= i;
             return *this;
         }
-        Vector4& operator* (const float i) const {
+        Vector4 operator* (const float i) const {
             return Vector4(*this) *= i;
         }
         // No cross multiplication for the Vector4 class
@@ -86,7 +97,10 @@ namespace RE330
         }
         // Equality test
         bool operator== (const Vector4& k) const {
-            return ((x - k[0] < EPSILON) && (y - k[1] < EPSILON) && (z - k[2] < EPSILON) && (w - k[3] < EPSILON));
+            return ((x - k[0] < EPSILON) && 
+                    (y - k[1] < EPSILON) && 
+                    (z - k[2] < EPSILON) && 
+                    (w - k[3] < EPSILON));
         }
         // Inequality test
         bool operator!= (const Vector4& k) const {
@@ -98,11 +112,20 @@ namespace RE330
             return sqrt((x*x) + (y*y) + (z*z) + (w*w));
         }
         // Normalizes the vector
-        Vector4& normalize () {
+        Vector4 normalize () {
             if (len() == 0) return (*this);
             return (*this) /= len();
         }
 	};
+
+    inline std::ostream& operator<< (std::ostream &out, Vector4 &v) {
+        out << "Vector4"
+            << "(" << v.x
+            << "," << v.y
+            << "," << v.z 
+            << "," << v.w << ")";
+        return out;
+    }
 
 }
 
