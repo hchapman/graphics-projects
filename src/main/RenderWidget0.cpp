@@ -39,16 +39,16 @@ void RenderWidget0::initSceneEvent()
     std::cout << *camera << std::endl;
 
     // First camera test setting
-    camera->createViewMatrix(
-        Vector4(0,0,40,1),
-        Vector4(0,0,0,1),
-        Vector4(0,1,0,0));
+    // camera->createViewMatrix(
+    //     Vector4(0,0,40,1),
+    //     Vector4(0,0,0,1),
+    //     Vector4(0,1,0,0));
 
     // Second camera test setting
-    // camera->createViewMatrix(
-    //     Vector4(-10,40,40,1),                     
-    //     Vector4(-5,0,0,1),
-    //     Vector4(0,1,0,0));
+    camera->createViewMatrix(
+        Vector4(-10,40,40,1),                     
+        Vector4(-5,0,0,1),
+        Vector4(0,1,0,0));
 
     // camera->createProjectionMatrix(
     //    1, 101, 1, 45.0/180.0*M_PI);
