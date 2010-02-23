@@ -12,9 +12,13 @@ namespace RE330 {
         d = e.asVector3() * -1; 
 
         // Finally, change the view matrix
-        v = Matrix4(a[0], a[1], a[2], d[0],
-                    b[0], b[1], b[2], d[1],
-                    c[0], c[1], c[2], d[2],
+        v = Matrix4(a[0], a[1], a[2], 0,
+                    b[0], b[1], b[2], 0,
+                    c[0], c[1], c[2], 0,
+                    0, 0, 0, 1) *
+            Matrix4(1, 0, 0, d[0],
+                    0, 1, 0, d[1],
+                    0, 0, 1, d[2],
                     0, 0, 0, 1);
         std::cout << v << std::endl;
     }
