@@ -157,7 +157,8 @@ void RenderWidget0::mousePressEvent(QMouseEvent *e)
 void RenderWidget0::mouseMoveEvent(QMouseEvent *e)
 {
     if (tracking && e->buttons() & Qt::LeftButton) {
-        Vector3 start, stop;
+        Vector3 start, stop; // Temporary vectors representing
+                             // points on the virtual trackball
         float _x, _y, _z; // Temporary 3-points
 
         // x coord of the start point on the virtual ball
@@ -165,6 +166,8 @@ void RenderWidget0::mouseMoveEvent(QMouseEvent *e)
         // y coord of the start point on the virtual ball
         _y = -((float)track_start.y()*2.f/(float)height()-1);
 
+        // Make sure we're not clicking outside of the sphere
+        // (There should be a better way to handle this)
         if (_x*_x + _y*_y > 1) {
             start = Vector3(_x, _y, 0).normalize();
         } else {
@@ -178,6 +181,8 @@ void RenderWidget0::mouseMoveEvent(QMouseEvent *e)
         // y coord of the stop point on the virtual ball
         _y = -((float)e->pos().y()*2.f/(float)height()-1);
 
+        // Make sure we're not clicking outside of the sphere
+        // (There should be a better way to handle this)
         if (_x*_x + _y*_y > 1) {
             stop = Vector3(_x, _y, 0).normalize();
         } else {
@@ -187,6 +192,9 @@ void RenderWidget0::mouseMoveEvent(QMouseEvent *e)
         }
 
         std::cout << start << "," << stop << std::endl;
+        
+        // Make sure that the vectors aren't equal (if they are,
+        // the cross product doesn't exist!)
         if (start != stop) {
             Matrix4 trackRotation = Matrix4::rotateA(start*stop, 
                                                      acos(start^stop));
