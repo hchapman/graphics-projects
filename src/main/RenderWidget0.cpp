@@ -139,6 +139,10 @@ void RenderWidget0::renderSceneEvent()
 
 void RenderWidget0::resizeRenderWidgetEvent(const QSize &s)
 {
+    // If we have a camera and are resizing the widget, be sure to
+    // update the aspect ratio!
+    if (camera)
+        camera->setAspectRatio((float)s.width()/(float)s.height());
 }
 
 void RenderWidget0::timerEvent(QTimerEvent *t)
@@ -164,11 +168,12 @@ void RenderWidget0::mouseMoveEvent(QMouseEvent *e)
         Vector3 start, stop; // Temporary vectors representing
                              // points on the virtual trackball
         float _x, _y, _z; // Temporary 3-points
+        const float diameter = (float)(width() < height() ? width() : height());
 
         // x coord of the start point on the virtual ball
-        _x = (float)track_start.x()*2.f/(float)width()-1;
+        _x = (float)track_start.x()*2.f/diameter-1;
         // y coord of the start point on the virtual ball
-        _y = -((float)track_start.y()*2.f/(float)height()-1);
+        _y = -((float)track_start.y()*2.f/diameter-1);
 
         if (RenderWidget0::USE_COMPOSITE) {
             // Use a composite sphere/hyperbolic sheet for the trackball
@@ -193,9 +198,9 @@ void RenderWidget0::mouseMoveEvent(QMouseEvent *e)
         start = Vector3(_x, _y, _z).normalize();
 
         // x coord of the stop point on the virtual ball
-        _x = (float)e->pos().x()*2.f/(float)width()-1;
+        _x = (float)e->pos().x()*2.f/diameter-1;
         // y coord of the stop point on the virtual ball
-        _y = -((float)e->pos().y()*2.f/(float)height()-1);
+        _y = -((float)e->pos().y()*2.f/diameter-1);
 
         if (RenderWidget0::USE_COMPOSITE) {
             // Use a composite sphere/hyperbolic sheet for the trackball
