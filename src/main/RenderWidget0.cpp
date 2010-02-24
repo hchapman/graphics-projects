@@ -33,7 +33,7 @@ void RenderWidget0::initSceneEvent()
     counter = 0;
 	sceneManager = new SceneManager();
 
-    const int CAMERA_POSITION = 1;
+    const int CAMERA_POSITION = 2;
 
 	// Camera
 	camera = sceneManager->createCamera();
