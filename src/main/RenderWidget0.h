@@ -54,6 +54,10 @@ private:
     Object *object;
 	int timerId;
     int counter;
+
+    // For the virtual trackball
+    bool tracking;
+    QPoint track_start;
 };
 
 #endif // BASICAPP_H

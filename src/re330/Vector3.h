@@ -94,7 +94,12 @@ namespace RE330
         }
         // Equality test within epsilon
         bool operator== (const Vector3& k) const {
-            return ((x - k[0] < EPSILON) && (y - k[1] < EPSILON) && (z - k[2] < EPSILON));
+            return ((x - k[0] <  EPSILON) &&
+                    (y - k[1] <  EPSILON) &&
+                    (z - k[2] <  EPSILON) &&
+                    (x - k[0] > -EPSILON) &&
+                    (y - k[1] > -EPSILON) &&
+                    (z - k[2] > -EPSILON));
         }
         // Inequality test
         bool operator!= (const Vector3& k) const {
