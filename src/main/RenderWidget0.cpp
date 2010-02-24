@@ -171,9 +171,9 @@ void RenderWidget0::mouseMoveEvent(QMouseEvent *e)
         const float diameter = (float)(width() < height() ? width() : height());
 
         // x coord of the start point on the virtual ball
-        _x = (float)track_start.x()*2.f/diameter-1;
+        _x = ((float)track_start.x()*2.f - (float)width())/diameter;
         // y coord of the start point on the virtual ball
-        _y = -((float)track_start.y()*2.f/diameter-1);
+        _y = -(((float)track_start.y()*2.f - (float)height())/diameter);
 
         if (RenderWidget0::USE_COMPOSITE) {
             // Use a composite sphere/hyperbolic sheet for the trackball
@@ -198,9 +198,9 @@ void RenderWidget0::mouseMoveEvent(QMouseEvent *e)
         start = Vector3(_x, _y, _z).normalize();
 
         // x coord of the stop point on the virtual ball
-        _x = (float)e->pos().x()*2.f/diameter-1;
+        _x = ((float)e->pos().x()*2.f - (float)width())/diameter;
         // y coord of the stop point on the virtual ball
-        _y = -((float)e->pos().y()*2.f/diameter-1);
+        _y = -(((float)e->pos().y()*2.f - (float)height())/diameter);
 
         if (RenderWidget0::USE_COMPOSITE) {
             // Use a composite sphere/hyperbolic sheet for the trackball
@@ -226,10 +226,17 @@ void RenderWidget0::mouseMoveEvent(QMouseEvent *e)
 
         // Make sure that the vectors aren't equal (if they are,
         // the cross product doesn't exist!)
-        if (start != stop) {
+        // Also, make sure that the cross product isn't 1, as acos(1) = nan
+        if (start != stop && 
+            !(1 - (start^stop)) < EPSILON & (1 - (start^stop)) > -EPSILON) {
             // Prep the trackball rotation matrix
             Matrix4 trackRotation = Matrix4::rotateA(start*stop, 
                                                      acos(start^stop));
+
+            std::cout << start << "x" << stop << "=" << start*stop << std::endl;
+            std::cout << " " << start << "^" << stop << "=" << 
+                (start^stop) << std::endl;
+            std::cout << trackRotation << std::endl;
 
             // Here's where the object rotation code should go. Right now,
             // we're hard coded in to use the 'object' object, but maybe

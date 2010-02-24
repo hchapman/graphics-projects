@@ -64,4 +64,4 @@ private:
     static const bool USE_COMPOSITE = true;
 };
 
-#endif // BASICAPP_H
+#endif // RenderWidget0_H
