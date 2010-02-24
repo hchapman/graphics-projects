@@ -146,17 +146,19 @@ void RenderWidget0::timerEvent(QTimerEvent *t)
 
 void RenderWidget0::mousePressEvent(QMouseEvent *e)
 {
+    // If we're pressing the left button, then we should start tracking
     if (e->buttons() & Qt::LeftButton) {
         tracking = true;
+
+        // Store the initial mouse position
         track_start = e->pos();
-        std::cout << track_start.x() << "," <<  track_start.y() << std::endl;
     }
 
 }
 
 void RenderWidget0::mouseMoveEvent(QMouseEvent *e)
 {
-    if (tracking && e->buttons() & Qt::LeftButton) {
+    if (tracking && e->buttons() & Qt::LeftButton && e->pos() != track_start) {
         Vector3 start, stop; // Temporary vectors representing
                              // points on the virtual trackball
         float _x, _y, _z; // Temporary 3-points
@@ -169,12 +171,14 @@ void RenderWidget0::mouseMoveEvent(QMouseEvent *e)
         // Make sure we're not clicking outside of the sphere
         // (There should be a better way to handle this)
         if (_x*_x + _y*_y > 1) {
-            start = Vector3(_x, _y, 0).normalize();
+            _z = 0;
         } else {
             // z coord of the start point on the virtual ball
             _z = sqrt(1 - _x*_x - _y*_y);
-            start = Vector3(_x, _y, _z).normalize();
         }
+
+        // Create the starting point vector
+        start = Vector3(_x, _y, _z).normalize();
 
         // x coord of the stop point on the virtual ball
         _x = (float)e->pos().x()*2.f/(float)width()-1;
@@ -184,34 +188,40 @@ void RenderWidget0::mouseMoveEvent(QMouseEvent *e)
         // Make sure we're not clicking outside of the sphere
         // (There should be a better way to handle this)
         if (_x*_x + _y*_y > 1) {
-            stop = Vector3(_x, _y, 0).normalize();
+            _z = 0;
         } else {
             // z coord of the stop point on the virtual ball
-            _z = sqrt(1 - _x *_x - _y*_y);      
-            stop = Vector3(_x, _y, _z).normalize();
+            _z = sqrt(1 - _x *_x - _y*_y);  
         }
 
-        std::cout << start << "," << stop << std::endl;
-        
+        // Create the stopping point vector
+        stop = Vector3(_x, _y, _z).normalize();
+
         // Make sure that the vectors aren't equal (if they are,
         // the cross product doesn't exist!)
         if (start != stop) {
+            // Prep the trackball rotation matrix
             Matrix4 trackRotation = Matrix4::rotateA(start*stop, 
                                                      acos(start^stop));
-            
-            std::cout << trackRotation << std::endl;
+
+            // Here's where the object rotation code should go. Right now,
+            // we're hard coded in to use the 'object' object, but maybe
+            // we should expand this to some sort of "scene" collection?
             object->setTransformation(trackRotation * 
                                       object->getTransformation());
 
+            // Update the (now old) mouse position
             track_start = e->pos();
-        } else
-            std::cout << "Vectors practically equal" << std::endl;
-    } else if (tracking)
+        }
+    } else if (tracking && !(e->buttons() & Qt::LeftButton))
+        // If we're tracking but somehow not clicking, then we shouldn't
+        // actually still be tracking
         tracking = false;
 }
 
 void RenderWidget0::mouseReleaseEvent(QMouseEvent *e)
 {
+    // If we've released the left mouse button, then we shouldn't be tracking
     if (!(e->buttons() & Qt::LeftButton))
         tracking = false;
 }
