@@ -33,25 +33,27 @@ void RenderWidget0::initSceneEvent()
     counter = 0;
 	sceneManager = new SceneManager();
 
+    const int CAMERA_POSITION = 1;
+
 	// Camera
 	camera = sceneManager->createCamera();
     
     std::cout << *camera << std::endl;
 
-    // First camera test setting
-    camera->createViewMatrix(
-        Vector4(0,0,40,1),
-        Vector4(0,0,0,1),
-        Vector4(0,1,0,0));
-
-    // Second camera test setting
-    // camera->createViewMatrix(
-    //     Vector4(-10,40,40,1),                     
-    //     Vector4(-5,0,0,1),
-    //     Vector4(0,1,0,0));
-
-    // camera->createProjectionMatrix(
-    //    1, 101, 1, 45.0/180.0*M_PI);
+    if (CAMERA_POSITION == 1) {
+        // First camera test setting
+        camera->createViewMatrix(
+            Vector4(0,0,40,1),
+            Vector4(0,0,0,1),
+            Vector4(0,1,0,0));
+    }
+    else if (CAMERA_POSITION == 2) {
+        // Second camera test setting
+        camera->createViewMatrix(
+            Vector4(-10,40,40,1),                     
+            Vector4(-5,0,0,1),
+            Vector4(0,1,0,0));
+    }
 
     camera->createProjectionMatrix(
         1, 100, 1, 60.0/180.0*M_PI);
@@ -168,13 +170,23 @@ void RenderWidget0::mouseMoveEvent(QMouseEvent *e)
         // y coord of the start point on the virtual ball
         _y = -((float)track_start.y()*2.f/(float)height()-1);
 
-        // Make sure we're not clicking outside of the sphere
-        // (There should be a better way to handle this)
-        if (_x*_x + _y*_y > 1) {
-            _z = 0;
+        if (RenderWidget0::USE_COMPOSITE) {
+            // Use a composite sphere/hyperbolic sheet for the trackball
+            // as suggested by http://www.opengl.org/wiki/Trackball
+            if (_x*_x + _y*_y <= 1.f/2.f) {
+                _z = sqrt(1 - _x*_x - _y*_y);
+            } else {
+                _z = 1.f/(2*sqrt(_x*_x + _y*_y));
+            }
         } else {
-            // z coord of the start point on the virtual ball
-            _z = sqrt(1 - _x*_x - _y*_y);
+            // Make sure we're not clicking outside of the sphere
+            // (There should be a better way to handle this)
+            if (_x*_x + _y*_y > 1) {
+                _z = 0;
+            } else {
+                // z coord of the start point on the virtual ball
+                _z = sqrt(1 - _x*_x - _y*_y);
+            }
         }
 
         // Create the starting point vector
@@ -185,13 +197,23 @@ void RenderWidget0::mouseMoveEvent(QMouseEvent *e)
         // y coord of the stop point on the virtual ball
         _y = -((float)e->pos().y()*2.f/(float)height()-1);
 
-        // Make sure we're not clicking outside of the sphere
-        // (There should be a better way to handle this)
-        if (_x*_x + _y*_y > 1) {
-            _z = 0;
+        if (RenderWidget0::USE_COMPOSITE) {
+            // Use a composite sphere/hyperbolic sheet for the trackball
+            // as suggested by http://www.opengl.org/wiki/Trackball
+            if (_x*_x + _y*_y <= 1.f/2.f) {
+                _z = sqrt(1 - _x*_x - _y*_y);
+            } else {
+                _z = 1.f/(2*sqrt(_x*_x + _y*_y));
+            }
         } else {
-            // z coord of the stop point on the virtual ball
-            _z = sqrt(1 - _x *_x - _y*_y);  
+            // Make sure we're not clicking outside of the sphere
+            // (There should be a better way to handle this)
+            if (_x*_x + _y*_y > 1) {
+                _z = 0;
+            } else {
+                // z coord of the stop point on the virtual ball
+                _z = sqrt(1 - _x *_x - _y*_y);  
+            }
         }
 
         // Create the stopping point vector

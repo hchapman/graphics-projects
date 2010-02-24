@@ -58,6 +58,10 @@ private:
     // For the virtual trackball
     bool tracking;
     QPoint track_start;
+    
+    // Use a composite sphere/hyperbolic sheet for the trackball
+    // as suggested by http://www.opengl.org/wiki/Trackball
+    static const bool USE_COMPOSITE = true;
 };
 
 #endif // BASICAPP_H
