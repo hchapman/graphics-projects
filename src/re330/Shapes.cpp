@@ -394,13 +394,13 @@ void Shapes::setupObject(Object* obj, int nVerts, int nIndices,
     // - one element for vertex positions
     vd.vertexDeclaration.addElement(0, 0, 3, 3*sizeof(float),
                                     RE330::VES_POSITION);
-    vd.createVertexBuffer(0, nVerts*sizeof(float), (unsigned char*)v);
+    vd.createVertexBuffer(0, nVerts*3*sizeof(float), (unsigned char*)v);
 
     // - one element for vertex colors
     if (c != NULL){
         vd.vertexDeclaration.addElement(1, 0, 3, 3*sizeof(int),
                                         RE330::VES_DIFFUSE);
-        vd.createVertexBuffer(1, nVerts*sizeof(float), (unsigned char*)c);
+        vd.createVertexBuffer(1, nVerts*3*sizeof(float), (unsigned char*)c);
     }
     // Create the buffers and load the data
     vd.createIndexBuffer(nIndices, i);
