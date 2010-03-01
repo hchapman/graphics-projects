@@ -2,7 +2,46 @@
 
 using namespace RE330;
 
-Object * Shapes::createHouse(SceneManager * sm)
+Object * Shapes::readObject(SceneManager* sm, std::string filename)
+{
+    int nVerts;
+    float * vertices;
+    float * normals;
+    float * texcoords;
+    int nIndices;
+    int * indices;
+    ObjReader::readObj(filename.c_str(), nVerts, &vertices, &normals,
+                       &texcoords, nIndices, &indices );
+
+    ObjReader::normalize(vertices, nVerts);
+
+    Object* objIn = sm->createObject();
+
+    // most readIn obj files have normals that assign colors
+    if(normals)
+    {
+        setupObject(objIn, nVerts, nIndices, vertices, normals, indices);
+    }
+    else
+    {
+        // the sphere obj files has no normals or colors
+        if (texcoords == NULL)
+        {
+            // fill textures with 1's to give sphere color and prevent seg_fault
+            texcoords = new float[nVerts];
+            for (int i = 0; i <= nVerts; i ++)
+            {
+                texcoords[i] = 1;
+            }
+        }
+
+        setupObject(objIn, nVerts, nIndices, vertices, texcoords, indices);
+    }
+
+    return objIn;
+}
+
+Object * Shapes::createHouse(SceneManager* sm)
 {
     Object* house = sm->createObject();
 
@@ -365,7 +404,9 @@ int* Shapes::boxIndices(const int num_colors, bool random_colors) {
     array[index++] = 4 * num_colors + color_index;
     return array;
 }
-void Shapes::setupObject(Object* obj, int nVerts, int nIndices, float* v, float* c, int* i) {
+
+void Shapes::setupObject(Object* obj, int nVerts, int nIndices,
+                         float* v, float* c, int* i) {
     VertexData& vd = obj->vertexData;
     // Specify the elements of the vertex data:
     // - one element for vertex positions
@@ -374,7 +415,7 @@ void Shapes::setupObject(Object* obj, int nVerts, int nIndices, float* v, float*
     vd.vertexDeclaration.addElement(1, 0, 3, 3*sizeof(int), RE330::VES_DIFFUSE);
 
     // Create the buffers and load the data
-    vd.createVertexBuffer(0, nVerts*3*sizeof(float), (unsigned char*)v);
-    vd.createVertexBuffer(1, nVerts*3*sizeof(float), (unsigned char*)c);
+    vd.createVertexBuffer(0, nVerts*sizeof(float), (unsigned char*)v);
+    vd.createVertexBuffer(1, nVerts*sizeof(float), (unsigned char*)c);
     vd.createIndexBuffer(nIndices, i);
 }

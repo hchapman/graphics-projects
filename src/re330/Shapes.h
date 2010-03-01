@@ -6,6 +6,7 @@
 #include <math.h>
 #include "Object.h"
 #include "SceneManager.h"
+#include "ObjReader.h"
 
 namespace RE330
 {
@@ -15,7 +16,9 @@ namespace RE330
     public:
         /** These methods create basic shapes.
          */
-        static Object * createHouse(SceneManager * sm);
+        static Object *readObject(SceneManager* sm, std::string filename);
+
+        static Object *createHouse(SceneManager* sm);
 
         static Object *createSphere(SceneManager* sm,
                                     float height, int slices, int points,

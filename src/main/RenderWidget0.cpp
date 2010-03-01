@@ -18,7 +18,7 @@ RenderWidget0::RenderWidget0()
     RenderContext *rs = new GLRenderContext();
     sceneManager = 0;
     tracking = false;
-    HOUSE= "house";
+    HOUSE = "house";
 }
 
 RenderWidget0::~RenderWidget0()
@@ -82,7 +82,8 @@ void RenderWidget0::setupCamera()
 
 void RenderWidget0::setupObjects()
 {
-    objects[HOUSE] = Shapes::createHouse(sceneManager);
+    //objects[HOUSE] = Shapes::createHouse(sceneManager);
+    objects["sphere"] = Shapes::readObject(sceneManager, "sphere.obj");
 }
 
 void RenderWidget0::renderSceneEvent()

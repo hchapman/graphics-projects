@@ -18,6 +18,7 @@ INCLUDEPATH += . src/main src/re330
 # Input
 HEADERS += src/main/MainWidget.h \
            src/main/MainWindow.h \
+           src/main/ObjReader.h \
            src/main/RenderWidget0.h \
            src/re330/BasicMath.h \
            src/re330/Camera.h \
@@ -43,6 +44,7 @@ HEADERS += src/main/MainWidget.h \
 SOURCES += src/main/main.cpp \
            src/main/MainWidget.cpp \
            src/main/MainWindow.cpp \
+           src/main/ObjReader.cpp \
            src/main/RenderWidget0.cpp \
            src/re330/BasicMath.cpp \
            src/re330/GLRenderContext.cpp \
