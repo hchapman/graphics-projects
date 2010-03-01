@@ -2,6 +2,60 @@
 
 using namespace RE330;
 
+Object * Shapes::createHouse(SceneManager * sm)
+{
+    Object* house = sm->createObject();
+
+    float house_v [] = {
+        -4,-4,4, 4,-4,4, 4,4,4, -4,4,4,      // front face
+        -4,-4,-4, -4,-4,4, -4,4,4, -4,4,-4,  // left face
+        4,-4,-4,-4,-4,-4, -4,4,-4, 4,4,-4,   // back face
+        4,-4,4, 4,-4,-4, 4,4,-4, 4,4,4,      // right face
+        4,4,4, 4,4,-4, -4,4,-4, -4,4,4,      // top face
+        -4,-4,4, -4,-4,-4, 4,-4,-4, 4,-4,4,  // bottom face
+        -20,-4,20, 20,-4,20, 20,-4,-20, -20,-4,-20,// ground floor
+        -4,4,4, 4,4,4, 0,8,4,                        // roof
+        4,4,4, 4,4,-4, 0,8,-4, 0,8,4,
+        -4,4,4, 0,8,4, 0,8,-4, -4,4,-4,
+        4,4,-4, -4,4,-4, 0,8,-4
+    };
+    float house_c [] = {
+        1,0,0, 1,0,0, 1,0,0, 1,0,0,	// front face
+        0,1,0, 0,1,0, 0,1,0, 0,1,0,	// left face
+        1,0,0, 1,0,0, 1,0,0, 1,0,0,	// back face
+        0,1,0, 0,1,0, 0,1,0, 0,1,0,	// right face
+        0,0,1, 0,0,1, 0,0,1, 0,0,1,	// top face
+        0,0,1, 0,0,1, 0,0,1, 0,0,1,	// bottom face
+
+        0,0.5,0, 0,0.5,0, 0,0.5,0, 0,0.5,0,	// ground floor
+        0,0,1, 0,0,1, 0,0,1,					// roof
+        1,0,0, 1,0,0, 1,0,0, 1,0,0,
+        0,1,0, 0,1,0, 0,1,0, 0,1,0,
+        0,0,1, 0,0,1, 0,0,1
+    };
+    int house_i [] = {
+        0,2,3, 0,1,2,			// front face
+        4,6,7, 4,5,6,			// left face
+        8,10,11, 8,9,10,		// back face
+        12,14,15, 12,13,14,	// right face
+        16,18,19, 16,17,18,	// top face
+        20,22,23, 20,21,22,	// bottom face
+
+        24,26,27, 24,25,26,	// ground floor
+        28,29,30,				// roof
+        31,33,34, 31,32,33,
+        35,37,38, 35,36,37,
+        39,40,41
+    };
+
+    int nVerts = 42;
+    int nIndices = 60;
+
+    setupObject(house, nVerts, nIndices, house_v, house_c, house_i);
+
+    return house;
+}
+
 Object* Shapes::createSphere(SceneManager* sm, float height, int slices, int points, const int num_colors, float color_list[][3], bool random_colors) {
     Object *sphere = sm->createObject();
     float* sphere_v = sphereVertices(height, slices, points, num_colors);
@@ -9,8 +63,8 @@ Object* Shapes::createSphere(SceneManager* sm, float height, int slices, int poi
     int* sphere_i = sphereIndices(slices, points, num_colors, random_colors);
     int nVerts = (slices + 1) * points * num_colors;
     int nIndices = slices * points * 2 * 3;
-    setupObject(sphere, nVerts, nIndices, sphere_v, sphere_c, sphere_i);	
-    return sphere;    
+    setupObject(sphere, nVerts, nIndices, sphere_v, sphere_c, sphere_i);
+    return sphere;
 }
 
 Object* Shapes::createCone(SceneManager* sm, float height, float base_radius, int base_points, const int num_colors, float color_list[][3], bool random_colors) {
@@ -70,7 +124,7 @@ float* Shapes::coneColors(int base_points, const int num_colors, float color_lis
             array[index++] = color_list[j][2];
         }
     }
-    return array;    
+    return array;
 }
 int* Shapes::coneIndices(int base_points, const int num_colors, bool random_colors) {
     srand(time(NULL));
@@ -132,7 +186,7 @@ float* Shapes::sphereColors(int slices, int points, const int num_colors, float 
             }
         }
     }
-    return array;    
+    return array;
 }
 int* Shapes::sphereIndices(int slices, int points, const int num_colors, bool random_colors) {
     srand(time(NULL));
@@ -313,14 +367,14 @@ int* Shapes::boxIndices(const int num_colors, bool random_colors) {
 }
 void Shapes::setupObject(Object* obj, int nVerts, int nIndices, float* v, float* c, int* i) {
     VertexData& vd = obj->vertexData;
-	// Specify the elements of the vertex data:
-	// - one element for vertex positions
-	vd.vertexDeclaration.addElement(0, 0, 3, 3*sizeof(float), RE330::VES_POSITION);
-	// - one element for vertex colors
-	vd.vertexDeclaration.addElement(1, 0, 3, 3*sizeof(int), RE330::VES_DIFFUSE);
-	
-	// Create the buffers and load the data
-	vd.createVertexBuffer(0, nVerts*3*sizeof(float), (unsigned char*)v);
-	vd.createVertexBuffer(1, nVerts*3*sizeof(float), (unsigned char*)c);
+    // Specify the elements of the vertex data:
+    // - one element for vertex positions
+    vd.vertexDeclaration.addElement(0, 0, 3, 3*sizeof(float), RE330::VES_POSITION);
+    // - one element for vertex colors
+    vd.vertexDeclaration.addElement(1, 0, 3, 3*sizeof(int), RE330::VES_DIFFUSE);
+
+    // Create the buffers and load the data
+    vd.createVertexBuffer(0, nVerts*3*sizeof(float), (unsigned char*)v);
+    vd.createVertexBuffer(1, nVerts*3*sizeof(float), (unsigned char*)c);
     vd.createIndexBuffer(nIndices, i);
 }
