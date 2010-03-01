@@ -18,6 +18,7 @@ RenderWidget0::RenderWidget0()
     RenderContext *rs = new GLRenderContext();
     sceneManager = 0;
     tracking = false;
+    sceneCreated = false;
     HOUSE = "house";
 }
 
@@ -78,6 +79,8 @@ void RenderWidget0::setupCamera()
 
     camera->createProjectionMatrix(
         1, 100, 1, 60.0/180.0*M_PI);
+
+    sceneCreated = true;
 }
 
 void RenderWidget0::setupObjects()
@@ -95,8 +98,8 @@ void RenderWidget0::resizeRenderWidgetEvent(const QSize &s)
 {
     // If we have a camera and are resizing the widget, be sure to
     // update the aspect ratio!
-    // if (camera)
-    //     camera->setAspectRatio((float)s.width()/(float)s.height());
+    if (sceneCreated)
+        camera->setAspectRatio((float)s.width()/(float)s.height());
 }
 
 void RenderWidget0::timerEvent(QTimerEvent *t)

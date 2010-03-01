@@ -66,6 +66,8 @@ private:
     // as suggested by http://www.opengl.org/wiki/Trackball
     static const bool USE_COMPOSITE = true;
 
+    bool sceneCreated;
+
     string HOUSE;
 };
 
