@@ -54,7 +54,7 @@ void RenderWidget0::toDecimal(int num_colors, float color_list[][3])
 
 void RenderWidget0::setupCamera()
 {
-    const int CAMERA_POSITION = 2;
+    const int CAMERA_POSITION = 1;
 
     // Camera
     camera = sceneManager->createCamera();
@@ -83,7 +83,7 @@ void RenderWidget0::setupCamera()
 void RenderWidget0::setupObjects()
 {
     //objects[HOUSE] = Shapes::createHouse(sceneManager);
-    objects["sphere"] = Shapes::readObject(sceneManager, "sphere.obj");
+    objects["sphere"] = Shapes::readObject(sceneManager, "dragon.obj");
 }
 
 void RenderWidget0::renderSceneEvent()

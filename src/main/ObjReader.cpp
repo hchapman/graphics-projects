@@ -14,7 +14,7 @@ void ObjReader::normalize(float * vertices, int numVertices)
     Vector3 maxValues;
     ObjReader::findMinAndMax(vertices, numVertices,
                              &minValues, &maxValues);
-
+    
 
 }
 

@@ -18,25 +18,7 @@ Object * Shapes::readObject(SceneManager* sm, std::string filename)
     Object* objIn = sm->createObject();
 
     // most readIn obj files have normals that assign colors
-    if(normals)
-    {
-        setupObject(objIn, nVerts, nIndices, vertices, normals, indices);
-    }
-    else
-    {
-        // the sphere obj files has no normals or colors
-        if (texcoords == NULL)
-        {
-            // fill textures with 1's to give sphere color and prevent seg_fault
-            texcoords = new float[nVerts];
-            for (int i = 0; i <= nVerts; i ++)
-            {
-                texcoords[i] = 1;
-            }
-        }
-
-        setupObject(objIn, nVerts, nIndices, vertices, texcoords, indices);
-    }
+    setupObject(objIn, nVerts, nIndices, vertices, normals, indices);
 
     return objIn;
 }
@@ -410,12 +392,16 @@ void Shapes::setupObject(Object* obj, int nVerts, int nIndices,
     VertexData& vd = obj->vertexData;
     // Specify the elements of the vertex data:
     // - one element for vertex positions
-    vd.vertexDeclaration.addElement(0, 0, 3, 3*sizeof(float), RE330::VES_POSITION);
-    // - one element for vertex colors
-    vd.vertexDeclaration.addElement(1, 0, 3, 3*sizeof(int), RE330::VES_DIFFUSE);
-
-    // Create the buffers and load the data
+    vd.vertexDeclaration.addElement(0, 0, 3, 3*sizeof(float),
+                                    RE330::VES_POSITION);
     vd.createVertexBuffer(0, nVerts*sizeof(float), (unsigned char*)v);
-    vd.createVertexBuffer(1, nVerts*sizeof(float), (unsigned char*)c);
+
+    // - one element for vertex colors
+    if (c != NULL){
+        vd.vertexDeclaration.addElement(1, 0, 3, 3*sizeof(int),
+                                        RE330::VES_DIFFUSE);
+        vd.createVertexBuffer(1, nVerts*sizeof(float), (unsigned char*)c);
+    }
+    // Create the buffers and load the data
     vd.createIndexBuffer(nIndices, i);
 }
