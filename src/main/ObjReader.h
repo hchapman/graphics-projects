@@ -18,8 +18,7 @@ namespace RE330 {
 	private:
 		static void get_indices(char *word, int *vindex, int *tindex, int *nindex);
 
-        static void findMinAndMax(float *vertices, int numVertices,
-                                  Vector3 * min, Vector3 * max);
+        static float findGreatestDiff(float *vertices, int numVertices);
 
 	};
 
