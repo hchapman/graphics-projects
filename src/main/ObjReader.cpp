@@ -10,15 +10,31 @@ using namespace std;
 
 void ObjReader::normalize(float * vertices, int numVertices)
 {
-    float diff = ObjReader::findGreatestDiff(vertices, numVertices);
-    float scaleFactor = 2/diff;
-    for (int v = 0; v <= numVertices; v++)
+    Vector3 minVector;
+    Vector3 maxVector;
+
+    ObjReader::findMinMaxVectors(vertices, numVertices, &minVector, &maxVector);
+    float diff = ObjReader::findGreatestDiff(minVector, maxVector);
+    float scaleFactor = 2 / diff;
+
+    float translation [] =
+        {
+            (minVector[0] + maxVector[0]) / 2,
+            (minVector[1] + maxVector[1]) / 2,
+            (minVector[2] + maxVector[2]) / 2
+        };
+
+    std::cout << minVector << std::endl;
+    for (int v = 0; v < numVertices*3; v++)
     {
-        vertices[v] = vertices[v]*.000001;
+        vertices[v] += translation[v % 3];
+        vertices[v] *= scaleFactor;
     }
+    std::cout << maxVector << std::endl;
 }
 
-float ObjReader::findGreatestDiff(float *vertices, int numVertices)
+void ObjReader::findMinMaxVectors(float *vertices, int numVertices,
+                                  Vector3 *minVector, Vector3 *maxVector)
 {
     float minX = numeric_limits<float>::max();
     float minY = numeric_limits<float>::max();
@@ -31,10 +47,11 @@ float ObjReader::findGreatestDiff(float *vertices, int numVertices)
     int remainder;
     float value;
 
-    for (int count; count <= numVertices; count++)
+    for (int count = 0; count < numVertices*3; count++)
     {
         value = vertices[count];
         remainder = count % 3;
+
         if (remainder == 0)
         {
             if (value > maxX) { maxX = value; }
@@ -49,12 +66,22 @@ float ObjReader::findGreatestDiff(float *vertices, int numVertices)
             else if (value < minZ) { minZ = value;}
         }
     }
+    std::cout << "minX" << minX << std::endl;
+    std::cout << "minY" << minY << std::endl;
+    std::cout << "minZ" << minZ << std::endl;
 
-    float diffX = maxX - minX;
-    float diffY = maxY - minY;
-    float diffZ = maxZ - minZ;
 
-    return std::max(diffX, std::max(diffY, diffZ));
+    *minVector = Vector3(minX, minY, minZ);
+    *maxVector = Vector3(maxX, maxY, maxZ);
+}
+
+float ObjReader::findGreatestDiff(Vector3 minVector, Vector3 maxVector)
+{
+    float xDiff = maxVector[0] - minVector[0];
+    float yDiff = maxVector[1] - minVector[1];
+    float zDiff = maxVector[2] - minVector[2];
+
+    return std::max(xDiff, std::max(yDiff, zDiff));
 
 }
 

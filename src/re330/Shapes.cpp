@@ -77,7 +77,10 @@ Object * Shapes::createHouse(SceneManager* sm)
     return house;
 }
 
-Object* Shapes::createSphere(SceneManager* sm, float height, int slices, int points, const int num_colors, float color_list[][3], bool random_colors) {
+Object* Shapes::createSphere(SceneManager* sm, float height, int slices,
+                             int points, const int num_colors,
+                             float color_list[][3], bool random_colors)
+{
     Object *sphere = sm->createObject();
     float* sphere_v = sphereVertices(height, slices, points, num_colors);
     float* sphere_c = sphereColors(slices, points, num_colors, color_list);
@@ -88,7 +91,10 @@ Object* Shapes::createSphere(SceneManager* sm, float height, int slices, int poi
     return sphere;
 }
 
-Object* Shapes::createCone(SceneManager* sm, float height, float base_radius, int base_points, const int num_colors, float color_list[][3], bool random_colors) {
+Object* Shapes::createCone(SceneManager* sm, float height, float base_radius,
+                           int base_points, const int num_colors,
+                           float color_list[][3], bool random_colors)
+{
     Object *cone = sm->createObject();
     float* cone_v = coneVertices(height, base_radius, base_points, num_colors);
     float* cone_c = coneColors(base_points, num_colors, color_list);
@@ -98,7 +104,11 @@ Object* Shapes::createCone(SceneManager* sm, float height, float base_radius, in
     setupObject(cone, nVerts, nIndices, cone_v, cone_c, cone_i);
     return cone;
 }
-Object* Shapes::createBox(SceneManager* sm, float height, float width, float depth, const int num_colors, float color_list[][3], bool random_colors) {
+
+Object* Shapes::createBox(SceneManager* sm, float height, float width,
+                          float depth, const int num_colors,
+                          float color_list[][3], bool random_colors)
+{
     Object *box = sm->createObject();
     float* box_v = boxVertices(height, width, depth, num_colors);
     float* box_c = boxColors(num_colors, color_list);
@@ -108,7 +118,10 @@ Object* Shapes::createBox(SceneManager* sm, float height, float width, float dep
     setupObject(box, nVerts, nIndices, box_v, box_c, box_i);
     return box;
 }
-float* Shapes::coneVertices(float height, float base_radius, int base_points, const int num_colors) {
+
+float* Shapes::coneVertices(float height, float base_radius, int base_points,
+                            const int num_colors)
+{
     float* array = new float[3 * num_colors * (1 + base_points)];
     // first make two top vertices for the
     int index = 0;
@@ -129,7 +142,10 @@ float* Shapes::coneVertices(float height, float base_radius, int base_points, co
     }
     return array;
 }
-float* Shapes::coneColors(int base_points, const int num_colors, float color_list[][3]) {
+
+float* Shapes::coneColors(int base_points, const int num_colors,
+                          float color_list[][3])
+{
     float* array = new float[3 * num_colors * (1 + base_points)];
     int index = 0;
     // for the top point(s)
@@ -147,7 +163,9 @@ float* Shapes::coneColors(int base_points, const int num_colors, float color_lis
     }
     return array;
 }
-int* Shapes::coneIndices(int base_points, const int num_colors, bool random_colors) {
+int* Shapes::coneIndices(int base_points, const int num_colors,
+                         bool random_colors)
+{
     srand(time(NULL));
     // connect the top point to adjacent base points.
     int* array = new int[3 * base_points];
@@ -177,7 +195,9 @@ int* Shapes::coneIndices(int base_points, const int num_colors, bool random_colo
     array[index++] = num_colors + color_index;
     return array;
 }
-float* Shapes::sphereVertices(float height, int slices, int points, const int num_colors) {
+float* Shapes::sphereVertices(float height, int slices, int points,
+                              const int num_colors)
+{
     float* array = new float[(slices + 1) * points * 3 * num_colors];
     int index = 0;
     float theta, phi;
@@ -194,7 +214,9 @@ float* Shapes::sphereVertices(float height, int slices, int points, const int nu
     }
     return array;
 }
-float* Shapes::sphereColors(int slices, int points, const int num_colors, float color_list[][3]) {
+float* Shapes::sphereColors(int slices, int points, const int num_colors,
+                            float color_list[][3])
+{
     float* array = new float[(slices + 1) * points * 3 * num_colors];
     int index;
     index = 0;
@@ -209,7 +231,9 @@ float* Shapes::sphereColors(int slices, int points, const int num_colors, float 
     }
     return array;
 }
-int* Shapes::sphereIndices(int slices, int points, const int num_colors, bool random_colors) {
+int* Shapes::sphereIndices(int slices, int points, const int num_colors,
+                           bool random_colors)
+{
     srand(time(NULL));
     int* array = new int[2 * (slices) * points * 3];
     int index = 0;
@@ -241,7 +265,10 @@ int* Shapes::sphereIndices(int slices, int points, const int num_colors, bool ra
     }
     return array;
 }
-float* Shapes::boxVertices(float height, float width, float depth, const int num_colors) {
+
+float* Shapes::boxVertices(float height, float width, float depth,
+                           const int num_colors)
+{
     float* array = new float[3 * 8 * num_colors];
     float coords[3 * 8] = {
         -width / 2, height / 2, -depth / 2,
@@ -262,7 +289,9 @@ float* Shapes::boxVertices(float height, float width, float depth, const int num
     }
     return array;
 }
-float* Shapes::boxColors(const int num_colors, float color_list[][3]) {
+
+float* Shapes::boxColors(const int num_colors, float color_list[][3])
+{
     float* array = new float[num_colors * 3 * 8];
     int index = 0;
     for (int j = 0; j < 8; j++) {
@@ -274,7 +303,9 @@ float* Shapes::boxColors(const int num_colors, float color_list[][3]) {
     }
     return array;
 }
-int* Shapes::boxIndices(const int num_colors, bool random_colors) {
+
+int* Shapes::boxIndices(const int num_colors, bool random_colors)
+{
     srand(time(NULL));
     int* array = new int[12 * 3];
     int index = 0;
@@ -388,7 +419,8 @@ int* Shapes::boxIndices(const int num_colors, bool random_colors) {
 }
 
 void Shapes::setupObject(Object* obj, int nVerts, int nIndices,
-                         float* v, float* c, int* i) {
+                         float* v, float* c, int* i)
+{
     VertexData& vd = obj->vertexData;
     // Specify the elements of the vertex data:
     // - one element for vertex positions
