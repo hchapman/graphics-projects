@@ -10,14 +10,17 @@ Object * Shapes::readObject(SceneManager* sm, std::string filename)
     float * texcoords;
     int nIndices;
     int * indices;
+
+    // read in an object from an obj file
     ObjReader::readObj(filename.c_str(), nVerts, &vertices, &normals,
                        &texcoords, nIndices, &indices );
 
+    // normalize a obj files
     ObjReader::normalize(vertices, nVerts);
 
     Object* objIn = sm->createObject();
 
-    // most readIn obj files have normals that assign colors
+    // display read in object
     setupObject(objIn, nVerts, nIndices, vertices, normals, indices);
 
     return objIn;

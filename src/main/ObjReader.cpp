@@ -13,10 +13,16 @@ void ObjReader::normalize(float * vertices, int numVertices)
     Vector3 minVector;
     Vector3 maxVector;
 
+    // finds min/max xyz values and puts them in Vector3's
     ObjReader::findMinMaxVectors(vertices, numVertices, &minVector, &maxVector);
+
+    // finds largest diff in xyz values for scale factor
     float diff = ObjReader::findGreatestDiff(minVector, maxVector);
+
+    // cube is width 2, so 2/diff normalizes to 2
     float scaleFactor = 2 / diff;
 
+    // averages min/max values to find center of shape
     float translation [] =
         {
             (minVector[0] + maxVector[0]) / 2,
@@ -24,18 +30,19 @@ void ObjReader::normalize(float * vertices, int numVertices)
             (minVector[2] + maxVector[2]) / 2
         };
 
-    std::cout << minVector << std::endl;
+    // applies the translation then scale factor to each value
     for (int v = 0; v < numVertices*3; v++)
     {
-        vertices[v] += translation[v % 3];
+        // mod operator gives us proper translation for xyz
+        vertices[v] -= translation[v % 3];
         vertices[v] *= scaleFactor;
     }
-    std::cout << maxVector << std::endl;
 }
 
 void ObjReader::findMinMaxVectors(float *vertices, int numVertices,
                                   Vector3 *minVector, Vector3 *maxVector)
 {
+    //initialize min/max values to limits
     float minX = numeric_limits<float>::max();
     float minY = numeric_limits<float>::max();
     float minZ = numeric_limits<float>::max();
@@ -44,9 +51,10 @@ void ObjReader::findMinMaxVectors(float *vertices, int numVertices,
     float maxY = numeric_limits<float>::min();
     float maxZ = numeric_limits<float>::min();
 
-    int remainder;
-    float value;
+    int remainder = NULL;
+    float value = NULL;
 
+    // iterate through all values to find min for each: xyz
     for (int count = 0; count < numVertices*3; count++)
     {
         value = vertices[count];
@@ -54,22 +62,22 @@ void ObjReader::findMinMaxVectors(float *vertices, int numVertices,
 
         if (remainder == 0)
         {
-            if (value > maxX) { maxX = value; }
-            else if (value < minX) { minX = value;}
-        } else if (remainder == 1)
+            maxX = std::max(maxX, value);
+            minX = std::min(minX, value);
+        }
+
+        else if (remainder == 1)
         {
-            if (value > maxY) { maxY = value; }
-            else if (value < minY) { minY = value;}
-        } else if (remainder == 2)
+            maxY = std::max(maxY, value);
+            minY = std::min(minY, value);
+        }
+
+        else if (remainder == 2)
         {
-            if (value > maxZ) { maxZ = value; }
-            else if (value < minZ) { minZ = value;}
+            maxZ = std::max(maxZ, value);
+            minZ = std::min(minZ, value);
         }
     }
-    std::cout << "minX" << minX << std::endl;
-    std::cout << "minY" << minY << std::endl;
-    std::cout << "minZ" << minZ << std::endl;
-
 
     *minVector = Vector3(minX, minY, minZ);
     *maxVector = Vector3(maxX, maxY, maxZ);
