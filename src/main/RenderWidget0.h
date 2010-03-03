@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include "GLRenderWidget.h"
-#include "GLRenderWidget.h"
+#include "SWRenderWidget.h"
 #include "SceneManager.h"
 #include "Object.h"
 using namespace RE330;
@@ -11,7 +11,7 @@ using namespace RE330;
 #include <map>
 using namespace std;
 
-class RenderWidget0 : public GLRenderWidget
+class RenderWidget0 : public SWRenderWidget
 {
 
 public:

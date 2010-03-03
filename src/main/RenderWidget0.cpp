@@ -15,7 +15,7 @@
 
 RenderWidget0::RenderWidget0()
 {
-    RenderContext *rs = new GLRenderContext();
+    RenderContext *rs = new SWRenderContext();
     sceneManager = 0;
     tracking = false;
     sceneCreated = false;
@@ -65,7 +65,7 @@ void RenderWidget0::setupCamera()
     {
         // First camera test setting
         camera->createViewMatrix(
-            Vector4(0,0,40,1),
+            Vector4(0,0,5,1),
             Vector4(0,0,0,1),
             Vector4(0,1,0,0));
     }
@@ -86,8 +86,8 @@ void RenderWidget0::setupCamera()
 
 void RenderWidget0::setupObjects()
 {
-    objects[HOUSE] = Shapes::createHouse(sceneManager);
-    //objects["bunny"] = Shapes::readObject(sceneManager, "bunny.obj");
+    //objects[HOUSE] = Shapes::createHouse(sceneManager);
+    objects["bunny"] = Shapes::readObject(sceneManager, "buddha.obj");
 }
 
 void RenderWidget0::renderSceneEvent()

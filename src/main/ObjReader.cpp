@@ -23,12 +23,7 @@ void ObjReader::normalize(float * vertices, int numVertices)
     float scaleFactor = 2 / diff;
 
     // averages min/max values to find center of shape
-    float translation [] =
-        {
-            (minVector[0] + maxVector[0]) / 2,
-            (minVector[1] + maxVector[1]) / 2,
-            (minVector[2] + maxVector[2]) / 2
-        };
+    Vector3 translation = (minVector + maxVector) / 2;
 
     // applies the translation then scale factor to each value
     for (int v = 0; v < numVertices*3; v++)
@@ -43,13 +38,19 @@ void ObjReader::findMinMaxVectors(float *vertices, int numVertices,
                                   Vector3 *minVector, Vector3 *maxVector)
 {
     //initialize min/max values to limits
-    float minX = numeric_limits<float>::max();
-    float minY = numeric_limits<float>::max();
-    float minZ = numeric_limits<float>::max();
+    float min[] = 
+        {
+            numeric_limits<float>::max(),
+            numeric_limits<float>::max(),
+            numeric_limits<float>::max()
+        };
 
-    float maxX = numeric_limits<float>::min();
-    float maxY = numeric_limits<float>::min();
-    float maxZ = numeric_limits<float>::min();
+    float max[] = 
+        {
+            numeric_limits<float>::min(),
+            numeric_limits<float>::min(),
+            numeric_limits<float>::min()
+        };
 
     int remainder = NULL;
     float value = NULL;
@@ -60,27 +61,12 @@ void ObjReader::findMinMaxVectors(float *vertices, int numVertices,
         value = vertices[count];
         remainder = count % 3;
 
-        if (remainder == 0)
-        {
-            maxX = std::max(maxX, value);
-            minX = std::min(minX, value);
-        }
-
-        else if (remainder == 1)
-        {
-            maxY = std::max(maxY, value);
-            minY = std::min(minY, value);
-        }
-
-        else if (remainder == 2)
-        {
-            maxZ = std::max(maxZ, value);
-            minZ = std::min(minZ, value);
-        }
+        max[remainder] = std::max(max[remainder], value);
+        min[remainder] = std::min(min[remainder], value);
     }
 
-    *minVector = Vector3(minX, minY, minZ);
-    *maxVector = Vector3(maxX, maxY, maxZ);
+    *minVector = Vector3(min);
+    *maxVector = Vector3(max);
 }
 
 float ObjReader::findGreatestDiff(Vector3 minVector, Vector3 maxVector)

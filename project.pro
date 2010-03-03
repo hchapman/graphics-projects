@@ -27,6 +27,9 @@ HEADERS += src/main/MainWidget.h \
            src/re330/GLRenderContext.h \
            src/re330/GLRenderWidget.h \
            src/re330/GLWidget.h \
+           src/re330/SWRenderContext.h \
+           src/re330/SWRenderWidget.h \
+           src/re330/SWWidget.h \
            src/re330/Matrix4.h \
            src/re330/Node.h \
            src/re330/Object.h \
@@ -49,6 +52,9 @@ SOURCES += src/main/main.cpp \
            src/re330/BasicMath.cpp \
            src/re330/GLRenderContext.cpp \
            src/re330/GLWidget.cpp \
+           src/re330/SWRenderContext.cpp \
+           src/re330/SWRenderWidget.cpp \
+           src/re330/SWWidget.cpp \
            src/re330/Matrix4.cpp \
            src/re330/Camera.cpp \
            src/re330/Frustum.cpp \

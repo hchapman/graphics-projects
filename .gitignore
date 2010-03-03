@@ -6,3 +6,5 @@ Makefile
 .\#*
 *~
 data/*
+*.obj
+*.mtl
