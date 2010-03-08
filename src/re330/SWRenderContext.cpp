@@ -24,7 +24,10 @@ void SWRenderContext::init()
 
 void SWRenderContext::setViewport(int width, int height)
 {
-	// Compute viewport matrix based on width, height.
+	viewport = Matrix4(width/2.f, 0, 0, width/2.f,
+                       0, -height/2.f, 0, height/2.f,
+                       0, 0, .5f, .5f,
+                       0, 0, 0, 1);
 }
 
 void SWRenderContext::beginFrame()
@@ -40,12 +43,12 @@ void SWRenderContext::endFrame()
 
 void SWRenderContext::setModelViewMatrix(const Matrix4 &m)
 {
-	// Set modelview matrix.
+	modelview = m;
 }
 
 void SWRenderContext::setProjectionMatrix(const Matrix4 &m)
 {
-	// Set projection matrix.
+	projection = m;
 }
 
 void SWRenderContext::render(Object *object)
@@ -168,6 +171,20 @@ void SWRenderContext::rasterizeTriangle(float p[3][4], float n[3][3], float c[3]
 	// Implement triangle rasterization here.
 	// Use viewport*projection*modelview matrix to project vertices to screen.
 	// You can draw pixels in the output image using image->setPixel(...);
+    //Matrix4 screen_transform = viewport*(projection*modelview);
+    Vector4 point, pixel;
+    for (int vertex = 0; vertex < 3; vertex++) {
+        point = Vector4(p[vertex]);
+        pixel = //screen_transform*point;
+            viewport*(projection*(modelview*point));
+        //std::cout << pixel << std::endl;
+        image->setPixel(pixel[0] / pixel[3],
+                        pixel[1] / pixel[3],
+                        qRgba((int)(c[vertex][0] * 255),
+                              (int)(c[vertex][1] * 255),
+                              (int)(c[vertex][2] * 255),
+                              (int)(c[vertex][3] * 255)));
+    }
 }
 
 void SWRenderContext::setWidget(SWWidget *swWidget)
