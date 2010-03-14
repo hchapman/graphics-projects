@@ -166,24 +166,96 @@ void SWRenderContext::render(Object *object)
 	}
 }
 
-void SWRenderContext::rasterizeTriangle(float p[3][4], float n[3][3], float c[3][4])
+inline void SWRenderContext::rasterizeTriangle(float p[3][4], 
+                                               float n[3][3], 
+                                               float c[3][4])
 {
 	// Implement triangle rasterization here.
 	// Use viewport*projection*modelview matrix to project vertices to screen.
 	// You can draw pixels in the output image using image->setPixel(...);
-    //Matrix4 screen_transform = viewport*(projection*modelview);
-    Vector4 point, pixel;
+
+    switch(RASTERIZE_METHOD) {
+    case VERTICES_ONLY:
+        rasterizeVertices(p, n, c);
+        break;
+    case BASIC_ONLY:
+        rasterizeBasic(p, n, c);
+        break;
+    }
+}
+
+void SWRenderContext::rasterizeVertices(float p[3][4], 
+                                        float n[3][3], 
+                                        float c[3][4]) {
+    // Object point, unit view pixel, screen pixel
+    Vector4 point, upixel, pixel;
+        
+    // Color vector
+    Vector4 color;
+
+    // Loop through each vertex, and draw them
     for (int vertex = 0; vertex < 3; vertex++) {
         point = Vector4(p[vertex]);
-        pixel = //screen_transform*point;
-            viewport*(projection*(modelview*point));
-        //std::cout << pixel << std::endl;
-        image->setPixel(pixel[0] / pixel[3],
-                        pixel[1] / pixel[3],
-                        qRgba((int)(c[vertex][0] * 255),
-                              (int)(c[vertex][1] * 255),
-                              (int)(c[vertex][2] * 255),
-                              (int)(c[vertex][3] * 255)));
+
+        upixel = projection * (modelview * point);
+        upixel /= upixel[3];
+
+        // Ensure that the point is within the view cube
+        if ((upixel[0] < 1 && upixel[0] > -1) &&
+            (upixel[1] < 1 && upixel[1] > -1) &&
+            (upixel[2] < 1 && upixel[2] > -1)) {
+
+            pixel = viewport * upixel;
+
+            color = Vector4(c[vertex]) * 255;
+
+            image->setPixel(pixel[0] / pixel[3],
+                            pixel[1] / pixel[3],
+                            qRgba((int)(color[0]),
+                                  (int)(color[1]),
+                                  (int)(color[2]),
+                                  (int)(color[3])));
+        }
+    }   
+}
+
+void SWRenderContext::rasterizeBasic(float p[3][4], 
+                                     float n[3][3], 
+                                     float c[3][4]) {
+    // Pixels and colors of the triangle vertices
+    Vector4 *pixels = new Vector4[3];
+    Vector4 *colors = new Vector4[3];
+
+    // Calculate the max width (this is kind of redundant)
+    Vector4 limit = viewport * Vector4(1,-1,0,0);
+
+    // Loop through each vertex, and find their pixel value
+    for (int vertex = 0; vertex < 3; vertex++) {
+        pixels[vertex] = viewport * (projection * 
+                                    (modelview * Vector4(p[vertex])));
+        pixels[vertex] /= pixels[vertex][3];
+    }
+    
+    // Bounding box boundaries
+    int bbX1, bbY1, bbX2, bbY2;
+    
+    // Find the location of the bounding box based on the pixels
+    bbX1 = min(pixels[0][0], min(pixels[1][0], pixels[2][0]));
+    bbY1 = min(pixels[0][1], min(pixels[1][1], pixels[2][1]));
+    bbX2 = max(pixels[0][0], max(pixels[1][0], pixels[2][0]));
+    bbY2 = max(pixels[0][1], max(pixels[1][1], pixels[2][1]));
+
+    // Clip the bounding box to the screen
+    bbX1 = max(0, bbX1); bbX2 = min(limit[0], bbX2);
+    bbY1 = max(0, bbX2); bbY2 = min(limit[1], bbY2);
+
+    // Loop through all pixels in the box
+    for (int x = bbX1; x <= bbX2; x++) {
+        for (int y = bbY1; y <= bbY2; y++) {
+            // Calculate the barycentric coordinates of the pixel
+            float alpha, beta, gamma;
+            
+        }
     }
 }
 

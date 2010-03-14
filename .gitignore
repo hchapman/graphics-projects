@@ -8,3 +8,4 @@ Makefile
 data/*
 *.obj
 *.mtl
+/p

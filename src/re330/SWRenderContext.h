@@ -49,6 +49,19 @@ namespace RE330 {
 		Matrix4 total;
 
 		void rasterizeTriangle(float p[3][4], float n[3][3], float c[3][4]);
+
+        // Specific types of rasterization for each part of the project
+        void rasterizeVertices(float p[3][4], float n[3][3], float c[3][4]);
+        void rasterizeBasic(float p[3][4], float n[3][3], float c[3][4]);
+
+        // What we should do when we rasterize
+        enum rasterize_type_t {
+            VERTICES_ONLY,
+            BASIC_ONLY,
+            PERSPECTIVE_CORRECT,
+            TWO_LEVEL
+        };
+        static const rasterize_type_t RASTERIZE_METHOD = BASIC_ONLY;
 	};
 
 }
