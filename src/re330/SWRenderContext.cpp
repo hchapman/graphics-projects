@@ -219,43 +219,101 @@ void SWRenderContext::rasterizeVertices(float p[3][4],
     }   
 }
 
+inline uint barycentricColor(float* abc, Vector4 *colors) {
+    return qRgba((int)(abc[0] * colors[0][0] + 
+                       abc[1] * colors[1][0] +
+                       abc[2] * colors[2][0]),
+                 (int)(abc[0] * colors[0][1] + 
+                       abc[1] * colors[1][1] +
+                       abc[2] * colors[2][1]),
+                 (int)(abc[0] * colors[0][2] + 
+                       abc[1] * colors[1][2] +
+                       abc[2] * colors[2][2]),
+                 (int)(abc[0] * colors[0][3] + 
+                       abc[1] * colors[1][3] +
+                       abc[2] * colors[2][3]));
+}
+
 void SWRenderContext::rasterizeBasic(float p[3][4], 
                                      float n[3][3], 
                                      float c[3][4]) {
     // Pixels and colors of the triangle vertices
-    Vector4 *pixels = new Vector4[3];
+    Vector4 *points = new Vector4[3];  // the pixels in 3-space
+    Vector3 *pixels = new Vector3[3];  // the pixels in 2-space
     Vector4 *colors = new Vector4[3];
 
     // Calculate the max width (this is kind of redundant)
-    Vector4 limit = viewport * Vector4(1,-1,0,0);
+    Vector4 limit = viewport * Vector4(1,-1,0,1);
+    limit /= limit[3];
+
+    // The two sides of the (projected) triangle adjacent to the first point
+    Vector3 lineAB, lineAC;
 
     // Loop through each vertex, and find their pixel value
     for (int vertex = 0; vertex < 3; vertex++) {
-        pixels[vertex] = viewport * (projection * 
+        points[vertex] = viewport * (projection * 
                                     (modelview * Vector4(p[vertex])));
-        pixels[vertex] /= pixels[vertex][3];
+        points[vertex] /= points[vertex][3];
+        pixels[vertex] = Vector3(points[vertex][0], points[vertex][1], 1.f);
+
+        colors[vertex] = Vector4(c[vertex]) * 255;
     }
     
     // Bounding box boundaries
-    int bbX1, bbY1, bbX2, bbY2;
+    int *bBox = new int[4];   // int[4]: (x1, y1), (x2, y2)
     
-    // Find the location of the bounding box based on the pixels
-    bbX1 = min(pixels[0][0], min(pixels[1][0], pixels[2][0]));
-    bbY1 = min(pixels[0][1], min(pixels[1][1], pixels[2][1]));
-    bbX2 = max(pixels[0][0], max(pixels[1][0], pixels[2][0]));
-    bbY2 = max(pixels[0][1], max(pixels[1][1], pixels[2][1]));
-
-    // Clip the bounding box to the screen
-    bbX1 = max(0, bbX1); bbX2 = min(limit[0], bbX2);
-    bbY1 = max(0, bbX2); bbY2 = min(limit[1], bbY2);
-
-    // Loop through all pixels in the box
-    for (int x = bbX1; x <= bbX2; x++) {
-        for (int y = bbY1; y <= bbY2; y++) {
-            // Calculate the barycentric coordinates of the pixel
-            float alpha, beta, gamma;
-            
+    // Find the location of the bounding box based on the points
+    for (int i = 0; i < 4; i++)  {
+        if ( i / 2 % 2 ) {
+            bBox[i] = std::min(std::max(points[0][i%2], 
+                              std::max(points[1][i%2], points[2][i%2])),
+                          limit[i%2]-1);
+            //if (bBox[i] > 100)
+            //  std::cout << bBox[i] << std::endl;
         }
+        else {
+            bBox[i] = std::max(std::min(points[0][i%2], 
+                              std::min(points[1][i%2], points[2][i%2])),
+                          0.f);
+        }
+    }
+
+    // Barycentric coordinate variables
+    float alpha, beta, gamma;
+
+    // Determine the edges b-a, c-a of the triangle
+    lineAB = pixels[1] - pixels[0];
+    lineAC = pixels[2] - pixels[0];
+
+    // The pixel in the box which we are currently processing
+    Vector3 boxPixel;
+
+    // Check if the triangle is degenerate
+    if (lineAB ^ lineAC) {
+        // The triangle is in fact a triangle
+        // Loop through all pixels in the box
+        for (int x = bBox[0]; x <= bBox[2]; x++) {
+            for (int y = bBox[1]; y <= bBox[3]; y++) {
+                boxPixel = Vector3(x, y, 1);
+
+                // Calculate the barycentric coordinates of the pixel
+                beta = (lineAC^(boxPixel - pixels[0])) / 
+                    (lineAC^(pixels[1] - pixels[0]));
+                gamma = (lineAB^(boxPixel - pixels[0])) / 
+                    (lineAB^(pixels[2] - pixels[0]));
+                alpha = (1 - beta - gamma);
+
+                // Check if the pixel is inside of the triangle
+                if (alpha < 1 && beta < 1 && gamma < 1 && 
+                    alpha > 0 && beta > 0 && gamma > 0) {
+                    image->setPixel(boxPixel[0],
+                                    boxPixel[1],
+                                    barycentricColor((&alpha), colors));
+                }
+            }
+        }
+    } else {
+        // The triangle is not a triangle
     }
 }
 

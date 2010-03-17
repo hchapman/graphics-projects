@@ -8,25 +8,25 @@
 
 namespace RE330
 {
-    class RE330_EXPORT Vector3
+    template <class T = float> class RE330_EXPORT Vector3
     {
     private:
-        float x, y, z;
+        T x, y, z;
     public:
-        friend std::ostream& operator<<(std::ostream& out, const Vector3& v);
+        friend std::ostream& operator<<<T>(std::ostream& out, const Vector3& v);
 
         // Constructors and assignment
-        Vector3() : x(0), y(0), z(0) {}
+        Vector3<T>() : x(0), y(0), z(0) {}
 
-        Vector3(const float a, const float b, const float c) :
+        Vector3<T>(const float a, const float b, const float c) :
             x(a), y(b), z(c) {}
 
-        Vector3(const float *k) : x(k[0]), y(k[1]), z(k[2]) {
+        Vector3<T>(const float *k) : x(k[0]), y(k[1]), z(k[2]) {
             std:: cout << *this; }
 
         float operator[] (int i) const { return (&x)[i]; }
 
-        Vector3& operator= (const Vector3& k)
+        Vector3<T>& operator= (const Vector3<T>& k)
         {
             x = k[0];
             y = k[1];
@@ -34,7 +34,7 @@ namespace RE330
             return *this;
         }
 
-        Vector3& operator= (const float* k)
+        Vector3<T>& operator= (const float* k)
         {
             x = k[0];
             y = k[1];
@@ -42,11 +42,11 @@ namespace RE330
             return *this;
         }
 
-        Vector3(const Vector3& k) {(*this) = k;}
+        Vector3<T>(const Vector3<T>& k) {(*this) = k;}
 
         // Overloaded operators
         // Addition
-        Vector3& operator+= (const Vector3& k)
+        Vector3<T>& operator+= (const Vector3<T>& k)
         {
             x += k[0];
             y += k[1];
@@ -54,13 +54,13 @@ namespace RE330
             return *this;
         }
 
-        Vector3 operator+ (const Vector3& k) const
+        Vector3<T> operator+ (const Vector3<T>& k) const
         {
-            return Vector3(*this) += k;
+            return Vector3<T>(*this) += k;
 
         }
         // Subtraction
-        Vector3& operator-= (const Vector3& k)
+        Vector3<T>& operator-= (const Vector3<T>& k)
         {
             x -= k[0];
             y -= k[1];
@@ -68,13 +68,13 @@ namespace RE330
             return *this;
 
         }
-        Vector3 operator- (const Vector3& k) const
+        Vector3<T> operator- (const Vector3<T>& k) const
         {
-            return Vector3(*this) -= k;
+            return Vector3<T>(*this) -= k;
         }
 
         // Scalar division
-        Vector3& operator/= (const float i)
+        Vector3<T>& operator/= (const float i)
         {
             x /= i;
             y /= i;
@@ -82,13 +82,13 @@ namespace RE330
             return *this;
         }
 
-        Vector3 operator/ (const float i) const
+        Vector3<T> operator/ (const float i) const
         {
-            return Vector3(*this) /= i;
+            return Vector3<T>(*this) /= i;
         }
 
         // Scalar multiplication
-        Vector3& operator*= (const float i)
+        Vector3<T>& operator*= (const float i)
         {
             x *= i;
             y *= i;
@@ -96,13 +96,13 @@ namespace RE330
             return *this;
         }
 
-        Vector3 operator* (const float i) const
+        Vector3<T> operator* (const float i) const
         {
-            return Vector3(*this) *= i;
+            return Vector3<T>(*this) *= i;
         }
 
         // Cross multiplication
-        Vector3& operator*= (const Vector3& k)
+        Vector3<T>& operator*= (const Vector3<T>& k)
         {
             float a = x; float b = y; float c = z;
             x = b*k[2] - c*k[1];
@@ -111,19 +111,19 @@ namespace RE330
             return *this;
         }
 
-        Vector3 operator* (const Vector3& k) const
+        Vector3<T> operator* (const Vector3<T>& k) const
         {
-            return Vector3(*this) *= k;
+            return Vector3<T>(*this) *= k;
         }
 
         // Dot multiplication
-        float operator^ (const Vector3& k) const
+        float operator^ (const Vector3<T>& k) const
         {
             return x*k[0] + y*k[1] + z*k[2];
         }
 
         // Equality test within epsilon
-        bool operator== (const Vector3& k) const
+        bool operator== (const Vector3<T>& k) const
         {
             return ((x - k[0] <  EPSILON) &&
                     (y - k[1] <  EPSILON) &&
@@ -134,7 +134,7 @@ namespace RE330
         }
 
         // Inequality test
-        bool operator!= (const Vector3& k) const
+        bool operator!= (const Vector3<T>& k) const
         {
             return !(*this == k);
         }
@@ -146,14 +146,14 @@ namespace RE330
         }
 
         // Normalizes the vector
-        Vector3 normalize ()
+        Vector3<T> normalize ()
         {
             if (len() == 0) return (*this);
             return (*this) /= len();
         }
     };
 
-    inline std::ostream& operator<<(std::ostream& out, const Vector3& v) {
+    template <class T = float> inline std::ostream& operator<<<T>(std::ostream& out, const Vector3<T>& v) {
         out << "Vector3(" << v.x << "," << v.y << "," << v.z << ")";
         return out;
     }
