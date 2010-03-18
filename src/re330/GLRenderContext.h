@@ -24,8 +24,8 @@ namespace RE330
 		void setViewport(int width, int height);
 		void beginFrame();
 		void endFrame();
-		void setModelViewMatrix(const Matrix4 &m);
-		void setProjectionMatrix(const Matrix4 &m);
+		void setModelViewMatrix(const Matrix4<float> &m);
+		void setProjectionMatrix(const Matrix4<float> &m);
 		/** This is the main method for rendering objects. Note that it uses
 			OpenGL vertex arrays. See the OpenGL 2.0 book for details.
 		*/

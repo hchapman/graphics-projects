@@ -10,49 +10,48 @@ namespace RE330
 {
     /** Matrix class for 4x4 matrices.
     */
+    template <class T = float>
     class RE330_EXPORT Matrix4
     {
     protected:
         union {
-            float m[4][4];
-            float _m[16];
+            T m[4][4];
+            T _m[16];
         };
 
     public:
-        friend std::ostream& operator<< (std::ostream &out, Matrix4 &m);
-
-        static inline Matrix4 rotateX(float a)
+        static inline Matrix4<T> rotateX(T a)
         {
-            return Matrix4(
+            return Matrix4<T>(
                 1, 0, 0, 0,
                 0, cos(a), -sin(a), 0,
                 0, sin(a), cos(a), 0,
                 0, 0, 0, 1);
         }
 
-        static inline Matrix4 rotateY(float a)
+        static inline Matrix4<T> rotateY(T a)
         {
-            return Matrix4(
+            return Matrix4<T>(
                 cos(a), 0, sin(a), 0,
                 0, 1, 0, 0,
                 -sin(a), 0, cos(a), 0,
                 0, 0, 0, 1);
         }
 
-        static inline Matrix4 rotateZ(float a)
+        static inline Matrix4<T> rotateZ(T a)
         {
-            return Matrix4(
+            return Matrix4<T>(
                 cos(a), -sin(a), 0, 0,
                 sin(a), cos(a), 0, 0,
                 0, 0, 1, 0,
                 0, 0, 0, 1);
         }
 
-        static inline Matrix4 rotateA(Vector3 axis, float a)
+        static inline Matrix4<T> rotateA(Vector3<T> axis, T a)
         {
-            Vector3 n = axis;
+            Vector3<T> n = axis;
             n.normalize();
-            return Matrix4(
+            return Matrix4<T>(
                 n[0]*n[0] + cos(a) * (1 - n[0]*n[0]),
                 n[0]*n[1] * (1 - cos(a)) - n[2] * sin(a),
                 n[0]*n[2] * (1 - cos(a)) + n[1] * sin(a),
@@ -72,9 +71,9 @@ namespace RE330
                 );
         }
 
-        static inline Matrix4 scale(float x, float y, float z)
+        static inline Matrix4<T> scale(T x, T y, T z)
         {
-            return Matrix4(
+            return Matrix4<T>(
                 x, 0, 0, 0,
                 0, y, 0, 0,
                 0, 0, z, 0,
@@ -82,14 +81,14 @@ namespace RE330
                 );
         }
 
-        static inline Matrix4 scale(Vector3 axis)
+        static inline Matrix4<T> scale(Vector3<T> axis)
         {
             return scale(axis[0], axis[1], axis[2]);
         }
 
-        static inline Matrix4 translate(float x, float y, float z)
+        static inline Matrix4<T> translate(T x, T y, T z)
         {
-            return Matrix4(
+            return Matrix4<T>(
                 1, 0, 0, x,
                 0, 1, 0, y,
                 0, 0, 1, z,
@@ -97,20 +96,20 @@ namespace RE330
                 );
         }
 
-        static inline Matrix4 translate(Vector3 v)
+        static inline Matrix4<T> translate(Vector3<T> v)
         {
             return translate(v[0], v[1], v[2]);
         }
 
-        static const Matrix4 IDENTITY;
+        static const Matrix4<T> IDENTITY;
 
-        inline Matrix4() {}
+        inline Matrix4<T>() {}
 
-        inline Matrix4(
-            float m00, float m01, float m02, float m03,
-            float m10, float m11, float m12, float m13,
-            float m20, float m21, float m22, float m23,
-            float m30, float m31, float m32, float m33 )
+        inline Matrix4<T>(
+            T m00, T m01, T m02, T m03,
+            T m10, T m11, T m12, T m13,
+            T m20, T m21, T m22, T m23,
+            T m30, T m31, T m32, T m33 )
         {
             _m[0] = m00;
             _m[1] = m01;
@@ -130,33 +129,33 @@ namespace RE330
             _m[15] = m33;
         }
 
-        inline Matrix4 (const float *m)
+        inline Matrix4<T> (const T *m)
         {
-            Matrix4(m[0], m[1], m[2], m[3],
-                    m[4], m[5], m[6], m[7],
-                    m[8], m[9], m[10], m[11],
-                    m[12], m[13], m[14], m[15]);
+            Matrix4<T>(m[0], m[1], m[2], m[3],
+                       m[4], m[5], m[6], m[7],
+                       m[8], m[9], m[10], m[11],
+                       m[12], m[13], m[14], m[15]);
         }
 
-        inline Matrix4 (const float **m)
+        inline Matrix4<T> (const T **m)
         {
-            Matrix4(m[0][0], m[0][1], m[0][2], m[0][3],
-                    m[1][0], m[1][1], m[1][2], m[1][3],
-                    m[2][0], m[2][1], m[2][2], m[2][3],
-                    m[3][0], m[3][1], m[3][2], m[3][3]);
+            Matrix4<T>(m[0][0], m[0][1], m[0][2], m[0][3],
+                       m[1][0], m[1][1], m[1][2], m[1][3],
+                       m[2][0], m[2][1], m[2][2], m[2][3],
+                       m[3][0], m[3][1], m[3][2], m[3][3]);
         }
-
-        // Construct a new Matrix4 from 4 column Vector4s
-        inline Matrix4 (const Vector4 a, const Vector4 b,
-                        const Vector4 c, const Vector4 d)
+        
+        // Construct a new Matrix4<T> from 4 column Vector4<T>s
+        inline Matrix4<T> (const Vector4<T> a, const Vector4<T> b,
+                           const Vector4<T> c, const Vector4<T> d)
         {
-            Matrix4(a[0], b[0], c[0], d[0],
-                    a[1], b[1], c[1], d[1],
-                    a[2], b[2], c[2], d[2],
-                    a[3], b[3], c[3], d[3]);
+            Matrix4<T>(a[0], b[0], c[0], d[0],
+                       a[1], b[1], c[1], d[1],
+                       a[2], b[2], c[2], d[2],
+                       a[3], b[3], c[3], d[3]);
         }
-
-        inline Matrix4& operator= (const Matrix4& n)
+        
+        inline Matrix4<T>& operator= (const Matrix4<T>& n)
         {
             m[0][0] = n.m[0][0];
             m[0][1] = n.m[0][1];
@@ -176,11 +175,12 @@ namespace RE330
             m[3][3] = n.m[3][3];
             return *this;
         }
-        inline Matrix4(const Matrix4& n) { (*this) = n; }
 
-        inline Matrix4 operator* (const Matrix4 &m2) const
+        inline Matrix4<T>(const Matrix4<T>& n) { (*this) = n; }
+        
+        inline Matrix4<T> operator* (const Matrix4<T> &m2) const
         {
-            Matrix4 n = Matrix4();
+            Matrix4<T> n = Matrix4<T>();
             n.m[0][0] = m[0][0] * m2.m[0][0] + m[0][1] * m2.m[1][0] +
                 m[0][2] * m2.m[2][0] + m[0][3] * m2.m[3][0];
             n.m[0][1] = m[0][0] * m2.m[0][1] + m[0][1] * m2.m[1][1] +
@@ -219,24 +219,31 @@ namespace RE330
             return n;
         }
 
-        inline Matrix4& operator*= (const Matrix4 &m2)
+        inline Matrix4<T>& operator*= (const Matrix4<T> &m2)
         {
             return *this = *this * m2;
         }
 
-        inline Vector4 operator*(const Vector4& k) const
+        inline Vector4<T> operator*(const Vector4<T>& k) const
         {
-            return Vector4(m[0][0]*k[0] + m[0][1]*k[1] + m[0][2]*k[2] + m[0][3]*k[3],
-                           m[1][0]*k[0] + m[1][1]*k[1] + m[1][2]*k[2] + m[1][3]*k[3],
-                           m[2][0]*k[0] + m[2][1]*k[1] + m[2][2]*k[2] + m[2][3]*k[3],
-                           m[3][0]*k[0] + m[3][1]*k[1] + m[3][2]*k[2] + m[3][3]*k[3]);
+            return Vector4<T>(m[0][0]*k[0] + m[0][1]*k[1] + 
+                              m[0][2]*k[2] + m[0][3]*k[3],
+
+                              m[1][0]*k[0] + m[1][1]*k[1] + 
+                              m[1][2]*k[2] + m[1][3]*k[3],
+
+                              m[2][0]*k[0] + m[2][1]*k[1] + 
+                              m[2][2]*k[2] + m[2][3]*k[3],
+
+                              m[3][0]*k[0] + m[3][1]*k[1] + 
+                              m[3][2]*k[2] + m[3][3]*k[3]);
         }
 
-        inline float operator[] (int i) const { return _m[i]; }
+        inline T operator[] (int i) const { return _m[i]; }
 
-        inline Matrix4 transpose() const
+        inline Matrix4<T> transpose() const
         {
-            Matrix4 r;
+            Matrix4<T> r;
             for(int i=0; i<4; i++)
             {
                 for(int j=0; j<4; j++)
@@ -247,22 +254,27 @@ namespace RE330
             return r;
         }
 
-        inline float* getElementPointer()
+        inline T* getElementPointer()
         {
-            return static_cast<float *>(_m);
+            return static_cast<T *>(_m);
+        }
+
+        inline std::ostream& streamOut (std::ostream &out) {
+            out << "Matrix4(";
+            for (int i = 0; i < 4; i++) {
+                out << "(";
+                for (int j = 0; j < 4; j++)
+                    out << m[i][j] << ((j == 3) ? ")" : ",");
+                out << ((i==3) ? ")" : ",");
+            }
+            return out;
         }
     };
 
-    inline std::ostream& operator<< (std::ostream &out, Matrix4 &m)
+    template <class T>
+    inline std::ostream& operator<< (std::ostream &out, Matrix4<T> &m)
     {
-        out << "Matrix4(";
-        for (int i = 0; i < 4; i++) {
-            out << "(";
-            for (int j = 0; j < 4; j++)
-                out << m.m[i][j] << ((j == 3) ? ")" : ",");
-            out << ((i==3) ? ")" : ",");
-        }
-        return out;
+        return m.streamOut(out);
     }
 
 }

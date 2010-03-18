@@ -39,13 +39,13 @@ void GLRenderContext::endFrame()
 	glFlush();    // forces previously issued OpenGL commands to begin execution
 }
 
-void GLRenderContext::setModelViewMatrix(const Matrix4 &m)
+void GLRenderContext::setModelViewMatrix(const Matrix4<float> &m)
 {
 	glMatrixMode(GL_MODELVIEW);    // selects model view matrix (used to describe affine transformations)
 	glLoadMatrixf(m.transpose().getElementPointer());    // sets model view matrix to transpose of m
 }
 
-void GLRenderContext::setProjectionMatrix(const Matrix4 &m)
+void GLRenderContext::setProjectionMatrix(const Matrix4<float> &m)
 {
 	glMatrixMode(GL_PROJECTION);    // selects projection matrix (used to describe orthographic and 
 	                                // perspective transformations)

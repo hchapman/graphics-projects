@@ -3,7 +3,7 @@
 namespace RE330 {
     void Camera::updateViewMatrix() {
 
-        Vector3 x_c, y_c, z_c, d;
+        Vector3<float> x_c, y_c, z_c, d;
 
         // difference btwn camera center(e) and look-at-point(l) normalized
         z_c = (e-l).asVector3().normalize();
@@ -18,7 +18,7 @@ namespace RE330 {
         d = e.asVector3() * -1;
 
         // Finally, change the view matrix
-        v = Matrix4(x_c[0], x_c[1], x_c[2], x_c^d,
+        v = Matrix4<float>(x_c[0], x_c[1], x_c[2], x_c^d,
                     y_c[0], y_c[1], y_c[2], y_c^d,
                     z_c[0], z_c[1], z_c[2], z_c^d,
                     0, 0, 0, 1);

@@ -16,10 +16,10 @@ namespace RE330
     class RE330_EXPORT Camera : public Frustum
     {
     private:
-        Matrix4 v;               // The View Matrix
-        Vector4 e;               // The Center of Projection
-        Vector4 u;               // The Up Vector
-        Vector4 l;               // The Look at Point
+        Matrix4<float> v;               // The View Matrix
+        Vector4<float> e;               // The Center of Projection
+        Vector4<float> u;               // The Up Vector
+        Vector4<float> l;               // The Look at Point
 
     public:
         friend std::ostream& operator<< (std::ostream &out, Camera &c);
@@ -28,22 +28,27 @@ namespace RE330
             e(0,0,10,1), u(0,1,0,0), l(0,0,0,1) {};
 
         // Accessor Methods
-        const Matrix4 &getViewMatrix() const { return v; }
-        const Vector4 &getCenter() const { return e; }
-        const Vector4 &getUpVector() const { return u; }
-        const Vector4 &getLookPoint() const { return l; }
+        const Matrix4<float> &getViewMatrix() const { return v; }
+        const Vector4<float> &getCenter() const { return e; }
+        const Vector4<float> &getUpVector() const { return u; }
+        const Vector4<float> &getLookPoint() const { return l; }
 
         // Updates the view matrix from member vectors.
         void updateViewMatrix();
 
         // Mutator Methods
-        void setCenter(Vector4 center)   { e = center; updateViewMatrix(); }
-        void setUpVector(Vector4 up)     { u = up;     updateViewMatrix(); }
-        void setLookPoint(Vector4 point) { l = point;  updateViewMatrix(); }
+        void setCenter(Vector4<float> center)   
+        { e = center; updateViewMatrix(); }
+        void setUpVector(Vector4<float> up)     
+        { u = up;     updateViewMatrix(); }
+        void setLookPoint(Vector4<float> point) 
+        { l = point;  updateViewMatrix(); }
 
         // Creates a view matrix from a center of projection,
         // a look at point, and an up vector.
-        void createViewMatrix(Vector4 center, Vector4 point, Vector4 up)
+        void createViewMatrix(Vector4<float> center, 
+                              Vector4<float> point, 
+                              Vector4<float> up)
         { e = center; l = point; u = up; updateViewMatrix(); }
 
     };

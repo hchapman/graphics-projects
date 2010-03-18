@@ -45,14 +45,14 @@ void SceneManager::renderScene()
         renderContext->beginFrame();
 
         renderContext->setProjectionMatrix(mCamera->getProjectionMatrix());
-        Matrix4 v = mCamera->getViewMatrix();
+        Matrix4<float> v = mCamera->getViewMatrix();
 
         // Iterate through list of objects
         std::list<Object *>::const_iterator iter;
         for (iter=mObjectList.begin(); iter!=mObjectList.end(); iter++)
         {
             Object *o = (*iter);
-            Matrix4 m = o->getTransformation();
+            Matrix4<float> m = o->getTransformation();
 
             renderContext->setModelViewMatrix(v*m);
             renderContext->render(o);

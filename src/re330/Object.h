@@ -15,9 +15,9 @@ namespace RE330
     class RE330_EXPORT Object
     {
     public:
-        inline void setTransformation(const Matrix4 &t) { mTransformation = t; }
+        inline void setTransformation(const Matrix4<float> &t) { mTransformation = t; }
 
-        inline Matrix4 getTransformation() const { return mTransformation; }
+        inline Matrix4<float> getTransformation() const { return mTransformation; }
 
         void printTransformation()
         {
@@ -36,9 +36,9 @@ namespace RE330
 
     protected:
 
-        Object() { mTransformation = Matrix4::IDENTITY; }
+        Object() { mTransformation = Matrix4<float>::IDENTITY; }
 
-        Matrix4 mTransformation;
+        Matrix4<float> mTransformation;
 
         friend class SceneManager;
     };

@@ -15,7 +15,7 @@ namespace RE330
     class RE330_EXPORT Frustum
     {
     protected:
-        Matrix4 p;
+        Matrix4<float> p;
         float near, far, aspect, fov;
 
     public:
@@ -24,7 +24,7 @@ namespace RE330
         Frustum() :	p(2,0,0,0, 0,2,0,0, 0,0,-1.02,-2.02, 0,0,-1.f,0.f),
             near(1), far(101), aspect(1), fov(M_PI/4) {};
 
-        const Matrix4 &getProjectionMatrix() const { return p; }
+        const Matrix4<float> &getProjectionMatrix() const { return p; }
 
         void updateProjectionMatrix();
 

@@ -21,10 +21,12 @@ namespace RE330 {
 
         // modifies Vector3 params to hold min/max xyz values
         static void findMinMaxVectors(float *vertices, int numVertices,
-                                      Vector3 *minVector, Vector3 *maxVector);
+                                      Vector3<float> *minVector, 
+                                      Vector3<float> *maxVector);
 
         // finds the largest magnitude of difference between xyz values
-        static float findGreatestDiff(Vector3 minVector, Vector3 maxVector);
+        static float findGreatestDiff(Vector3<float> minVector, 
+                                      Vector3<float> maxVector);
 
 	};
 
