@@ -65,17 +65,17 @@ void RenderWidget0::setupCamera()
     {
         // First camera test setting
         camera->createViewMatrix(
-            Vector4(0,0,40,1),
-            Vector4(0,0,0,1),
-            Vector4(0,1,0,0));
+            Vector4<float>(0,0,40,1),
+            Vector4<float>(0,0,0,1),
+            Vector4<float>(0,1,0,0));
     }
     else if (CAMERA_POSITION == 2)
     {
         // Second camera test setting
         camera->createViewMatrix(
-            Vector4(-10,40,40,1),
-            Vector4(-5,0,0,1),
-            Vector4(0,1,0,0));
+            Vector4<float>(-10,40,40,1),
+            Vector4<float>(-5,0,0,1),
+            Vector4<float>(0,1,0,0));
     }
 
     camera->createProjectionMatrix(
@@ -86,7 +86,7 @@ void RenderWidget0::setupCamera()
 
 void RenderWidget0::setupObjects()
 {
-    objects[HOUSE] = Shapes::createHouse(sceneManager);
+    objects[HOUSE] = Shapes::createColorfulHouse(sceneManager);
     //objects["bunny"] = Shapes::readObject(sceneManager, "buddha.obj");
 }
 
@@ -125,8 +125,8 @@ void RenderWidget0::mouseMoveEvent(QMouseEvent *e)
 {
     if (tracking && e->buttons() & Qt::LeftButton && e->pos() != track_start)
     {
-        Vector3 start, stop; // Temporary vectors representing
-                             // points on the virtual trackball
+        Vector3<float> start, stop; // Temporary vectors representing
+                                    // points on the virtual trackball
         float _x, _y, _z; // Temporary 3-points
         const float diameter = (float)(width() < height() ? width() : height());
 
@@ -157,7 +157,7 @@ void RenderWidget0::mouseMoveEvent(QMouseEvent *e)
         }
 
         // Create the starting point vector
-        start = Vector3(_x, _y, _z).normalize();
+        start = Vector3<float>(_x, _y, _z).normalize();
 
         // x coord of the stop point on the virtual ball
         _x = ((float)e->pos().x()*2.f - (float)width())/diameter;
@@ -186,7 +186,7 @@ void RenderWidget0::mouseMoveEvent(QMouseEvent *e)
         }
 
         // Create the stopping point vector
-        stop = Vector3(_x, _y, _z).normalize();
+        stop = Vector3<float>(_x, _y, _z).normalize();
 
         // Make sure that the vectors aren't equal (if they are,
         // the cross product doesn't exist!)
@@ -194,8 +194,9 @@ void RenderWidget0::mouseMoveEvent(QMouseEvent *e)
         if (start != stop &&
             !(1 - (start^stop)) < EPSILON & (1 - (start^stop)) > -EPSILON) {
             // Prep the trackball rotation matrix
-            Matrix4 trackRotation = Matrix4::rotateA(start*stop,
-                                                     acos(start^stop));
+            Matrix4<float> trackRotation = 
+                Matrix4<float>::rotateA(start*stop,
+                                        acos(start^stop));
 
             // rotates all objects in scene via iteration
             for (it = objects.begin(); it != objects.end(); it++ )

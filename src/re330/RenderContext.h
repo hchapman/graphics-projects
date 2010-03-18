@@ -22,8 +22,8 @@ namespace RE330
 		virtual void setViewport(int width, int height) = 0;
 		virtual void beginFrame() = 0;
 		virtual void endFrame() = 0;
-		virtual void setModelViewMatrix(const Matrix4 &m) = 0;
-		virtual void setProjectionMatrix(const Matrix4 &m) = 0;
+		virtual void setModelViewMatrix(const Matrix4<float> &m) = 0;
+		virtual void setProjectionMatrix(const Matrix4<float> &m) = 0;
 		virtual void render(Object *object) = 0;
 	};
 

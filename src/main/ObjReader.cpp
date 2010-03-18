@@ -10,8 +10,8 @@ using namespace std;
 
 void ObjReader::normalize(float * vertices, int numVertices)
 {
-    Vector3 minVector;
-    Vector3 maxVector;
+    Vector3<float> minVector;
+    Vector3<float> maxVector;
 
     // finds min/max xyz values and puts them in Vector3's
     ObjReader::findMinMaxVectors(vertices, numVertices, &minVector, &maxVector);
@@ -23,7 +23,7 @@ void ObjReader::normalize(float * vertices, int numVertices)
     float scaleFactor = 2 / diff;
 
     // averages min/max values to find center of shape
-    Vector3 translation = (minVector + maxVector) / 2;
+    Vector3<float> translation = (minVector + maxVector) / 2;
 
     // applies the translation then scale factor to each value
     for (int v = 0; v < numVertices*3; v++)
@@ -35,7 +35,8 @@ void ObjReader::normalize(float * vertices, int numVertices)
 }
 
 void ObjReader::findMinMaxVectors(float *vertices, int numVertices,
-                                  Vector3 *minVector, Vector3 *maxVector)
+                                  Vector3<float> *minVector, 
+                                  Vector3<float> *maxVector)
 {
     //initialize min/max values to limits
     float min[] = 
@@ -65,11 +66,12 @@ void ObjReader::findMinMaxVectors(float *vertices, int numVertices,
         min[remainder] = std::min(min[remainder], value);
     }
 
-    *minVector = Vector3(min);
-    *maxVector = Vector3(max);
+    *minVector = Vector3<float>(min);
+    *maxVector = Vector3<float>(max);
 }
 
-float ObjReader::findGreatestDiff(Vector3 minVector, Vector3 maxVector)
+float ObjReader::findGreatestDiff(Vector3<float> minVector, 
+                                  Vector3<float> maxVector)
 {
     float xDiff = maxVector[0] - minVector[0];
     float yDiff = maxVector[1] - minVector[1];

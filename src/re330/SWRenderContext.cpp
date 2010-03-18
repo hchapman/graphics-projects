@@ -16,17 +16,18 @@ SWRenderContext& SWRenderContext::getSingleton(void)
 
 void SWRenderContext::init()
 {
-	modelview = Matrix4::IDENTITY;
-	projection = Matrix4::IDENTITY;
-	viewport = Matrix4::IDENTITY;
-	total = Matrix4::IDENTITY;
+	modelview = Matrix4<float>::IDENTITY;
+	projection = Matrix4<float>::IDENTITY;
+	viewport = Matrix4<float>::IDENTITY;
+	total = Matrix4<float>::IDENTITY;
 }
 
-void SWRenderContext::setViewport(int width, int height)
+void SWRenderContext::setViewport(int w, int h)
 {
-	viewport = Matrix4(width/2.f, 0, 0, width/2.f,
+    width = w, height = h;
+	viewport = Matrix4<float>(width/2.f, 0, 0, width/2.f,
                        0, -height/2.f, 0, height/2.f,
-                       0, 0, .5f, .5f,
+                       0, 0, -.5f, .5f,
                        0, 0, 0, 1);
 }
 
@@ -41,18 +42,26 @@ void SWRenderContext::endFrame()
 	mswWidget->repaint();
 }
 
-void SWRenderContext::setModelViewMatrix(const Matrix4 &m)
+void SWRenderContext::setModelViewMatrix(const Matrix4<float> &m)
 {
 	modelview = m;
 }
 
-void SWRenderContext::setProjectionMatrix(const Matrix4 &m)
+void SWRenderContext::setProjectionMatrix(const Matrix4<float> &m)
 {
 	projection = m;
 }
 
 void SWRenderContext::render(Object *object)
 {
+    delete zBuffer;
+    zBuffer = new float[height * width];
+    for (int i = height * width; i--; ) {
+        zBuffer[i] = -1;
+    }
+
+    total = viewport * projection * modelview;
+    
 	VertexData& vertexData = object->vertexData;
 	VertexDeclaration& vertexDeclaration = vertexData.vertexDeclaration;
 	VertexBufferBinding& vertexBufferBinding = vertexData.vertexBufferBinding;
@@ -113,6 +122,7 @@ void SWRenderContext::render(Object *object)
 	int *iPtr = vertexData.getIndexBuffer();
 
 	for(int i=0; i<vertexData.getIndexCount(); i++)
+        //for(int i=0; i<3; i++)
 	{
 		// Local index of current triangle vertex
 		int k = i%3;
@@ -174,6 +184,8 @@ inline void SWRenderContext::rasterizeTriangle(float p[3][4],
 	// Use viewport*projection*modelview matrix to project vertices to screen.
 	// You can draw pixels in the output image using image->setPixel(...);
 
+    //rasterizeVertices(p,n,c); return;
+
     switch(RASTERIZE_METHOD) {
     case VERTICES_ONLY:
         rasterizeVertices(p, n, c);
@@ -188,14 +200,14 @@ void SWRenderContext::rasterizeVertices(float p[3][4],
                                         float n[3][3], 
                                         float c[3][4]) {
     // Object point, unit view pixel, screen pixel
-    Vector4 point, upixel, pixel;
+    Vector4<float> point, upixel, pixel;
         
     // Color vector
-    Vector4 color;
+    Vector4<float> color;
 
     // Loop through each vertex, and draw them
     for (int vertex = 0; vertex < 3; vertex++) {
-        point = Vector4(p[vertex]);
+        point = Vector4<float>(p[vertex]);
 
         upixel = projection * (modelview * point);
         upixel /= upixel[3];
@@ -207,7 +219,7 @@ void SWRenderContext::rasterizeVertices(float p[3][4],
 
             pixel = viewport * upixel;
 
-            color = Vector4(c[vertex]) * 255;
+            color = Vector4<float>(c[vertex]) * 255;
 
             image->setPixel(pixel[0] / pixel[3],
                             pixel[1] / pixel[3],
@@ -219,44 +231,27 @@ void SWRenderContext::rasterizeVertices(float p[3][4],
     }   
 }
 
-inline uint barycentricColor(float* abc, Vector4 *colors) {
-    return qRgba((int)(abc[0] * colors[0][0] + 
-                       abc[1] * colors[1][0] +
-                       abc[2] * colors[2][0]),
-                 (int)(abc[0] * colors[0][1] + 
-                       abc[1] * colors[1][1] +
-                       abc[2] * colors[2][1]),
-                 (int)(abc[0] * colors[0][2] + 
-                       abc[1] * colors[1][2] +
-                       abc[2] * colors[2][2]),
-                 (int)(abc[0] * colors[0][3] + 
-                       abc[1] * colors[1][3] +
-                       abc[2] * colors[2][3]));
+inline uint barycentricColor(Vector3<float> abc, 
+                             Vector3<Vector4<float> > colors) {
+    Vector4<int> c = Vector4<int>(colors ^ abc);
+    return qRgba(c[0], c[1], c[2], 1);
 }
 
 void SWRenderContext::rasterizeBasic(float p[3][4], 
                                      float n[3][3], 
                                      float c[3][4]) {
     // Pixels and colors of the triangle vertices
-    Vector4 *points = new Vector4[3];  // the pixels in 3-space
-    Vector3 *pixels = new Vector3[3];  // the pixels in 2-space
-    Vector4 *colors = new Vector4[3];
-
-    // Calculate the max width (this is kind of redundant)
-    Vector4 limit = viewport * Vector4(1,-1,0,1);
-    limit /= limit[3];
-
-    // The two sides of the (projected) triangle adjacent to the first point
-    Vector3 lineAB, lineAC;
+    Vector4<float> *points = new Vector4<float>[3];  // the pixels in 3-space
+    Vector3<float> *pixels = new Vector3<float>[3];  // the pixels in 2-space
+    Vector4<float> *colors = new Vector4<float>[3];
 
     // Loop through each vertex, and find their pixel value
     for (int vertex = 0; vertex < 3; vertex++) {
-        points[vertex] = viewport * (projection * 
-                                    (modelview * Vector4(p[vertex])));
+        points[vertex] = total * Vector4<float>(p[vertex]);
         points[vertex] /= points[vertex][3];
-        pixels[vertex] = Vector3(points[vertex][0], points[vertex][1], 1.f);
+        pixels[vertex] = Vector3<float>(points[vertex][0], points[vertex][1], 1.f);
 
-        colors[vertex] = Vector4(c[vertex]) * 255;
+        colors[vertex] = Vector4<float>(c[vertex]) * 255;
     }
     
     // Bounding box boundaries
@@ -267,9 +262,7 @@ void SWRenderContext::rasterizeBasic(float p[3][4],
         if ( i / 2 % 2 ) {
             bBox[i] = std::min(std::max(points[0][i%2], 
                               std::max(points[1][i%2], points[2][i%2])),
-                          limit[i%2]-1);
-            //if (bBox[i] > 100)
-            //  std::cout << bBox[i] << std::endl;
+                               (float)(i%2 ? height : width) - 1);
         }
         else {
             bBox[i] = std::max(std::min(points[0][i%2], 
@@ -281,12 +274,24 @@ void SWRenderContext::rasterizeBasic(float p[3][4],
     // Barycentric coordinate variables
     float alpha, beta, gamma;
 
+    Vector3<float> lineAB, lineAC, normAB, normAC;
+    Vector4<float> lineAB3D, lineAC3D;
+
     // Determine the edges b-a, c-a of the triangle
     lineAB = pixels[1] - pixels[0];
     lineAC = pixels[2] - pixels[0];
 
+    lineAB3D = points[1] - points[0];
+    lineAC3D = points[2] - points[0];
+
+    normAB = Vector3<float>(pixels[0][1] - pixels[1][1],
+                     pixels[1][0] - pixels[0][0], 0.f);
+    normAC = Vector3<float>(pixels[0][1] - pixels[2][1],
+                     pixels[2][0] - pixels[0][0], 0.f);
+
     // The pixel in the box which we are currently processing
-    Vector3 boxPixel;
+    Vector3<float> boxPixel;
+    Vector4<float> boxPixel3D;
 
     // Check if the triangle is degenerate
     if (lineAB ^ lineAC) {
@@ -294,26 +299,44 @@ void SWRenderContext::rasterizeBasic(float p[3][4],
         // Loop through all pixels in the box
         for (int x = bBox[0]; x <= bBox[2]; x++) {
             for (int y = bBox[1]; y <= bBox[3]; y++) {
-                boxPixel = Vector3(x, y, 1);
+                boxPixel = Vector3<float>(x, y, 1);
+                //std::cout << boxPixel << std::endl;
 
                 // Calculate the barycentric coordinates of the pixel
-                beta = (lineAC^(boxPixel - pixels[0])) / 
-                    (lineAC^(pixels[1] - pixels[0]));
-                gamma = (lineAB^(boxPixel - pixels[0])) / 
-                    (lineAB^(pixels[2] - pixels[0]));
+                beta = (normAC^(boxPixel - pixels[0])) / 
+                    (normAC^lineAB);
+                gamma = (normAB^(boxPixel - pixels[0])) / 
+                    (normAB^lineAC);
+
                 alpha = (1 - beta - gamma);
+
+                //std::cout << pixels[0] + lineAB*beta + lineAC*gamma << std::endl;
 
                 // Check if the pixel is inside of the triangle
                 if (alpha < 1 && beta < 1 && gamma < 1 && 
                     alpha > 0 && beta > 0 && gamma > 0) {
-                    image->setPixel(boxPixel[0],
-                                    boxPixel[1],
-                                    barycentricColor((&alpha), colors));
+
+                    boxPixel3D = points[0] + lineAB3D * beta + lineAC3D * gamma;
+                    // std::cout << boxPixel3D << std::endl;
+
+                    //std::cout << alpha << "," << beta << "," << gamma << std::endl;
+                    setPixel((int)boxPixel[0],
+                             (int)boxPixel[1],
+                             boxPixel3D[2],
+                             barycentricColor(Vector3<float>(alpha,beta,gamma), 
+                                              Vector3<Vector4<float> >(colors)));
                 }
             }
         }
     } else {
         // The triangle is not a triangle
+    }
+}
+
+void SWRenderContext::setPixel(int x, int y, float z, uint colors) {
+    if (zBuffer[y*width + x] <= z && z <= 1) {
+        zBuffer[y*width + x] = z;
+        image->setPixel(x, y, colors);
     }
 }
 
