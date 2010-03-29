@@ -285,9 +285,9 @@ void SWRenderContext::rasterizeBasic(float p[3][4],
     lineAC3D = points[2] - points[0];
 
     normAB = Vector3<float>(pixels[0][1] - pixels[1][1],
-                     pixels[1][0] - pixels[0][0], 0.f);
+                            pixels[1][0] - pixels[0][0], 0.f);
     normAC = Vector3<float>(pixels[0][1] - pixels[2][1],
-                     pixels[2][0] - pixels[0][0], 0.f);
+                            pixels[2][0] - pixels[0][0], 0.f);
 
     // The pixel in the box which we are currently processing
     Vector3<float> boxPixel;
