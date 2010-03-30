@@ -8,7 +8,7 @@ MainWindow::MainWindow()
 
 	// the menu bar (21 pixels) is part of the widget size...
 	//resize(512,512+21);
-    resize(200,200+21);
+    resize(512,512+21);
 	
 	renderWidget = new RenderWidget0();
 	setCentralWidget(renderWidget);

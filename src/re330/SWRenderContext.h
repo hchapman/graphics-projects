@@ -44,6 +44,9 @@ namespace RE330 {
 		QImage *image;
         int height, width;
 
+        int frames_rendered;
+        clock_t start_time;
+
         float *zBuffer;
 
 		Matrix4<float> projection;
@@ -68,10 +71,13 @@ namespace RE330 {
             TWO_LEVEL
         };
 
-        // The stage of rasterization we shoul use. Types are above in the enum
+        // The stage of rasterization we should use. Types are above in the enum
         static const rasterize_type_t RASTERIZE_METHOD = TWO_LEVEL;
         // Number of subdivisions to use in TWO_LEVEL
-        static const int SUBDIV = 4;
+        static const int SUBDIV = 3;
+
+        // Number of frames to count before averaging and printing the FPS
+        static const int FRAMECOUNT = 60;
 	};
 
 }

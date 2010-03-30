@@ -56,7 +56,7 @@ void RenderWidget0::toDecimal(int num_colors, float color_list[][3])
 
 void RenderWidget0::setupCamera()
 {
-    const int CAMERA_POSITION = 1;
+    const int CAMERA_POSITION = 3;
 
     // Camera
     camera = sceneManager->createCamera();
@@ -68,6 +68,8 @@ void RenderWidget0::setupCamera()
             Vector4<float>(0,0,40,1),
             Vector4<float>(0,0,0,1),
             Vector4<float>(0,1,0,0));
+        camera->createProjectionMatrix(
+            1, 100, 1, 60.0/180.0*M_PI);
     }
     else if (CAMERA_POSITION == 2)
     {
@@ -76,18 +78,37 @@ void RenderWidget0::setupCamera()
             Vector4<float>(-10,40,40,1),
             Vector4<float>(-5,0,0,1),
             Vector4<float>(0,1,0,0));
+        camera->createProjectionMatrix(
+             1, 100, 1, 60.0/180.0*M_PI);
     }
-
-    camera->createProjectionMatrix(
-        1, 100, 1, 60.0/180.0*M_PI);
+    else if (CAMERA_POSITION == 3)
+    {
+        // First camera test setting for p3
+        camera->createViewMatrix(
+            Vector4<float>(20,20,20,1),
+            Vector4<float>(0,0,0,1),
+            Vector4<float>(0,1,0,0));
+        camera->createProjectionMatrix(
+            1, 100, 1, 60.0/180.0*M_PI);
+    }
+    else if (CAMERA_POSITION == 4)
+    {
+        // First camera test setting for p3
+        camera->createViewMatrix(
+            Vector4<float>(-10,20,200,1),
+            Vector4<float>(-5,0,0,1),
+            Vector4<float>(0,1,0,0));
+        camera->createProjectionMatrix(
+            1, 100, 1, 60.0/180.0*M_PI);
+    }
 
     sceneCreated = true;
 }
 
 void RenderWidget0::setupObjects()
 {
-    // objects[HOUSE] = Shapes::createHouse(sceneManager);
-    objects["rect"] = Shapes::createRect(sceneManager, 10, 10);
+    objects[HOUSE] = Shapes::createColorfulHouse(sceneManager);
+    //objects["rect"] = Shapes::createRect(sceneManager, 10, 10);
     //objects["bunny"] = Shapes::readObject(sceneManager, "buddha.obj");
 }
 
