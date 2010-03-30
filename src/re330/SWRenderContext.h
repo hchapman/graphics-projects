@@ -55,7 +55,7 @@ namespace RE330 {
 
         // Specific types of rasterization for each part of the project
         void rasterizeVertices(float p[3][4], float n[3][3], float c[3][4]);
-        void rasterizeBasic(float p[3][4], float n[3][3], float c[3][4]);
+        void rasterize(float p[3][4], float n[3][3], float c[3][4], int type);
 
         // Set a pixel (with z-buffering)
         void setPixel(int x, int y, float z, uint color);
@@ -67,7 +67,11 @@ namespace RE330 {
             PERSPECTIVE_CORRECT,
             TWO_LEVEL
         };
-        static const rasterize_type_t RASTERIZE_METHOD = BASIC_ONLY;
+
+        // The stage of rasterization we shoul use. Types are above in the enum
+        static const rasterize_type_t RASTERIZE_METHOD = TWO_LEVEL;
+        // Number of subdivisions to use in TWO_LEVEL
+        static const int SUBDIV = 4;
 	};
 
 }

@@ -39,6 +39,7 @@ namespace RE330
                                  const int num_colors,
                                  float color_list[][3],
                                  bool random_colors);
+        static Object *createRect(SceneManager* sm, float height, float width);
 
         // Create the cone arrays
         static float* coneVertices(float height, float base_radius,

@@ -292,6 +292,26 @@ Object* Shapes::createBox(SceneManager* sm, float height, float width,
     return box;
 }
 
+Object* Shapes::createRect(SceneManager* sm, float height, float width)
+{
+    Object *rect = sm->createObject();
+    float rect_v[4*3] = {-width, -height, 0, 
+                         width, -height, 0,
+                         width, height, 0,
+                         -width, height, 0};
+    float rect_c[4*3] = {1,0,0, 
+                         0,0,1, 
+                         0,0,1, 
+                         1,0,0};
+    int rect_i[6] = {0,2,3, 
+                     0,1,2};
+    int nVerts = 4;
+    int nIndices = 6;
+    setupObject(rect, nVerts, nIndices, rect_v, rect_c, rect_i);
+    return rect;
+}
+
+
 float* Shapes::coneVertices(float height, float base_radius, int base_points,
                             const int num_colors)
 {
@@ -590,6 +610,10 @@ int* Shapes::boxIndices(const int num_colors, bool random_colors)
     array[index++] = 4 * num_colors + color_index;
     return array;
 }
+
+
+
+
 
 void Shapes::setupObject(Object* obj, int nVerts, int nIndices,
                          float* v, float* c, int* i)

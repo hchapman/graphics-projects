@@ -99,6 +99,30 @@ namespace RE330
             return Vector3<T>(*this) *= i;
         }
 
+        // Division through by another vector
+        template <class U>
+        Vector3<T> operator/= (const Vector3<U> k) 
+        {
+            x /= k[0];
+            y /= k[1];
+            z /= k[2];
+            return *this;
+        }
+
+        template <class U>
+        Vector3<T> operator/ (const Vector3<U> k) const
+        {
+            return Vector3<T>(*this) /= k;
+        }
+
+        // Multiplication through by another vector
+        // Careful! This supposes that U*T returns a U.
+        template <class U>
+        Vector3<T> times(const Vector3<U> k) const
+        {
+            return Vector3<T>(x * k[0], y * k[1], z * k[2]) ;
+        }
+
         // Cross multiplication
         Vector3<T>& operator*= (const Vector3<T>& k)
         {
@@ -151,6 +175,17 @@ namespace RE330
             return (*this) /= len();
         }
 
+        Vector3<T> reciprocal () const
+        {
+            return Vector3<T> (1/x, 1/y, 1/z);
+        }
+
+        // Return the sum (taxicab distance from origin)
+        T sum() const
+        {
+            return (x + y + z);
+        }
+
         // Stream into an ostream object
         inline std::ostream& streamOut(std::ostream& out) const 
         {
@@ -163,6 +198,11 @@ namespace RE330
     inline std::ostream& operator<< (std::ostream& out, 
                                      const Vector3<T>& v) {
         return v.streamOut(out);
+    }
+
+    template <class T>
+    inline Vector3<T>& operator/ (const T t, const Vector3<T>& v) {
+        return Vector3<T>(t / v[0], t / v[1], t / v[2]);
     }
 }
 
