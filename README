@@ -1,6 +1,18 @@
-Computer Graphics (C SCI 330) Project 2 code
+Computer Graphics (C SCI 330) Project 3 code
+
+Simple testing shows that the most effective number of subdivisions is 5.
+Results of this testing:
+No two-level rendering: 2.2 fps
+6 subdivisions: 2.7 fps
+5 subdivisions: 2.78 fps
+4 subdivisions: 2.69 fps
+3 subdivisions: 2.65 fps
+
+Screenshots and more extensive frame-per-second details will be
+prepared for the presentation on Friday.
 
 Changed files:
+src/main/MainWindow.cpp
 src/main/ObjReader.cpp
 src/main/ObjReader.h
 src/main/RenderWidget0.cpp
@@ -9,12 +21,19 @@ src/re330/Camera.cpp
 src/re330/Camera.h
 src/re330/Frustum.cpp
 src/re330/Frustum.h
+src/re330/GLRenderContext.cpp
+src/re330/GLRenderContext.h
 src/re330/Matrix4.cpp
 src/re330/Matrix4.h
 src/re330/Object.h
-src/re330/RE330_global.h
+src/re330/RenderContext.h
+src/re330/SWRenderContext.cpp
+src/re330/SWRenderContext.h
+src/re330/SWRenderWidget.cpp
+src/re330/SWRenderWidget.h
+src/re330/SWWidget.cpp
+src/re330/SWWidget.h
 src/re330/SceneManager.cpp
-src/re330/SceneManager.h
 src/re330/Shapes.cpp
 src/re330/Shapes.h
 src/re330/Vector3.h
